@@ -42,11 +42,6 @@
 
 # 📦 DOCUMENTACION DE INSTALACION
 
-## ⚙️ INSTALACION AUTOMATICA CON .PS1
-
-<!-- Ejecutalo con powershell
-<a href="./src/assets/install_win.rar">Descargar archivo 📥</a> -->
-
 ## 📄 VARIABLES DE ENTORNO
 
 Crea el archivo <b><i>.env</i></b> en base al archivo <b><i>.env.example</i></b> y configuralo. Principalmente las variables de entorno que se deben configurar son:
