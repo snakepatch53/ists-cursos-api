@@ -13,12 +13,11 @@
 
 <p>
     Este proyect es una api rest para el manejo de cursos, estudiantes, docentes y usuarios del instituto superior tecnologico sucua.
-    <br><br>
+    <br>
     Esta desarrollada bajo las tecnologias web principales: <b>PHP, LARAVEL, MYSQL</b>
-    <br><br>
+    <br>
     El lenguaje de programacion principal es <b>PHP</b> y el gestor de base de datos es <b>MYSQL</b>
-    <br><br>
-    <br><br>
+    <br>
     El framework de desarrollo es <b>LARAVEL</b> y el ORM es <b>ELOQUENT</b>
     <br><br>
 </p>
