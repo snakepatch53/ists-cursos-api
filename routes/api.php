@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImageController;
 use App\Http\Controllers\SocialNetworkController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -21,5 +22,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::group(['prefix' => 'v1'], function () {
+
+    // SOCIAL NETWORKS
     Route::resource('social-networks', SocialNetworkController::class);
+
+    // IMAGES
+    Route::resource('images', ImageController::class);
+    Route::post('images/{id}', [ImageController::class, 'updateWithImage']);
 });
