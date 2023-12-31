@@ -17,7 +17,8 @@ class ImageFactory extends Factory
     public function definition()
     {
         return [
-            //
+            "image" => $this->faker->randomElement(["1.png", "2.png", "3.png", "4.png", "5.png"]),
+            "description" => $this->faker->sentence()
         ];
     }
 }
