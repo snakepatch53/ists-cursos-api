@@ -32,11 +32,11 @@
 
 <p>
     Este proyecto es de código abierto, ¡lo que significa que es completamente libre! 🙌 Puedes usarlo, copiarlo, modificarlo y distribuirlo como desees para tus propios proyectos sin ningún tipo de restricciones. 🚀
-    <br><br>
+    <br>
     Nos encanta la idea de que más personas puedan utilizar y mejorar nuestro código. 🤓
-    <br><br>
+    <br>
     ¡Gracias por visitarnos y disfruta del código! 😎
-    <br><br>
+    <br>
 </p>
 
 # 📦 DOCUMENTACION DE INSTALACION
