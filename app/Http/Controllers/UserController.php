@@ -51,7 +51,9 @@ class UserController extends Controller
             "lastname" => "required",
             "dni" => "required",
             "email" => "required",
-            "password" => "required"
+            "password" => "required",
+            "photo" => "required|file|mimes:" . $this->IMAGE_TYPE,
+            "signature" => "required|file|mimes:" . $this->IMAGE_TYPE
         ];
 
         $validator = Validator::make($request->all(), $rules);
