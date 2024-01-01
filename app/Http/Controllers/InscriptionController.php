@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Inscription;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -32,7 +34,6 @@ class InscriptionController extends Controller
     public function store(Request $request)
     {
         $rules = [
-            "approval" => "required",
             "certificate_code" => "required",
             "student_id" => "required",
             "course_id" => "required",
@@ -46,6 +47,38 @@ class InscriptionController extends Controller
                 "data" => $validator->errors()
             ]);
         }
+
+        $errors = [];
+
+        //validaciones del estudiante
+        $student = Student::find($request->student_id);
+        if (!$student) $errors[] = "El estudiante no existe";
+
+        //validaciones del curso
+        $course = Course::find($request->course_id);
+        if (!$course) {
+            $errors[] = "El curso no existe";
+        } else if ($course->date_end < date("Y-m-d")) {
+            $errors[] = "El curso ya finalizo";
+        } else if ($course->quota <= count($course->inscriptions)) {
+            $errors[] = "El curso ya no tiene cupos";
+        }
+
+        //validaciones de la inscripcion
+        $inscription = Inscription::where("student_id", $request->student_id)->where("course_id", $request->course_id)->first();
+        if ($inscription) $errors[] = "El estudiante ya esta inscrito en el curso";
+
+        // si hay errores
+        if (count($errors) > 0) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $errors),
+                "data" => $errors
+            ]);
+        }
+
+        // desaprobado siempre al crear
+        $request->merge(["approval" => false]);
 
         $data = Inscription::create($request->all());
 
@@ -62,13 +95,16 @@ class InscriptionController extends Controller
      * @param  \App\Models\Inscription  $inscription
      * @return \Illuminate\Http\Response
      */
-    public function show(Inscription $inscription)
+    public function show(Request $request, Inscription $inscription)
     {
-        $inscription->load('student', 'course');
+        $includes = [];
+        if ($request->query('includeStudent')) $includes[] = 'student';
+        if ($request->query('includeCourse')) $includes[] = 'course';
+
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
-            "data" => $inscription
+            "data" => $inscription->load($includes)
         ]);
     }
 
@@ -96,6 +132,27 @@ class InscriptionController extends Controller
                 "data" => $validator->errors()
             ]);
         }
+
+        $errors = [];
+
+        //validaciones del estudiante
+        $student = Student::find($request->student_id);
+        if (!$student) $errors[] = "El estudiante no existe";
+
+        //validaciones del curso
+        $course = Course::find($request->course_id);
+        if (!$course) {
+            $errors[] = "El curso no existe";
+        } else if ($course->date_end < date("Y-m-d")) {
+            $errors[] = "El curso ya finalizo";
+        } else if ($course->quota <= count($course->inscriptions)) {
+            $errors[] = "El curso ya no tiene cupos";
+        }
+
+        //validaciones de la inscripcion sin contar la misma
+        $inscription_ = Inscription::where("student_id", $request->student_id)->where("course_id", $request->course_id)->where("id", "!=", $inscription->id)->first();
+        if ($inscription_) $errors[] = "El estudiante ya esta inscrito en el curso";
+
 
         $inscription->update($request->all());
 

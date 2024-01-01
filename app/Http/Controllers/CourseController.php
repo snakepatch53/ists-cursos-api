@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Course;
+use App\Models\Template;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
@@ -63,6 +65,31 @@ class CourseController extends Controller
                 "data" => $validator->errors()
             ]);
         }
+
+        $errors = [];
+
+        //validaciones del docente
+        $teacher = User::find($request->teacher_id);
+        if (!$teacher) $errors[] = "El docente no existe";
+
+        //validaciones del responsable
+        $responsible = User::find($request->responsible_id);
+        if (!$responsible) $errors[] = "El responsable no existe";
+
+        //validaciones de la plantilla
+        $template = Template::find($request->template_id);
+        if (!$template) $errors[] = "La plantilla no existe";
+
+        // Si hay errores
+        if (count($errors) > 0) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $errors),
+                "data" => null
+            ]);
+        }
+
+
 
         $fileName = basename($request->file("image")->store($this->IMAGE_PATH));
 
@@ -126,6 +153,29 @@ class CourseController extends Controller
             ]);
         }
 
+        $errors = [];
+
+        //validaciones del docente
+        $teacher = User::find($request->teacher_id);
+        if (!$teacher) $errors[] = "El docente no existe";
+
+        //validaciones del responsable
+        $responsible = User::find($request->responsible_id);
+        if (!$responsible) $errors[] = "El responsable no existe";
+
+        //validaciones de la plantilla
+        $template = Template::find($request->template_id);
+        if (!$template) $errors[] = "La plantilla no existe";
+
+        // Si hay errores
+        if (count($errors) > 0) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $errors),
+                "data" => null
+            ]);
+        }
+
         $course->update($request->all());
 
         return response()->json([
@@ -158,6 +208,29 @@ class CourseController extends Controller
                 "success" => false,
                 "message" => implode(" - ", $validator->errors()->all()),
                 "data" => $validator->errors()
+            ]);
+        }
+
+        $errors = [];
+
+        //validaciones del docente
+        $teacher = User::find($request->teacher_id);
+        if (!$teacher) $errors[] = "El docente no existe";
+
+        //validaciones del responsable
+        $responsible = User::find($request->responsible_id);
+        if (!$responsible) $errors[] = "El responsable no existe";
+
+        //validaciones de la plantilla
+        $template = Template::find($request->template_id);
+        if (!$template) $errors[] = "La plantilla no existe";
+
+        // Si hay errores
+        if (count($errors) > 0) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $errors),
+                "data" => null
             ]);
         }
 
@@ -195,7 +268,7 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        $course->load('inscriptions');
+
         if ($course->inscriptions->count() > 0) {
             return response()->json([
                 "success" => false,
