@@ -29,17 +29,17 @@ class Course extends Model
         return asset("storage/app/public/img_courses/" . $this->image);
     }
 
-    public function teachers()
+    public function teacher()
     {
         return $this->belongsTo(User::class, 'teacher_id');
     }
 
-    public function responsibles()
+    public function responsible()
     {
         return $this->belongsTo(User::class, 'responsible_id');
     }
 
-    public function templates()
+    public function template()
     {
         return $this->belongsTo(Template::class);
     }

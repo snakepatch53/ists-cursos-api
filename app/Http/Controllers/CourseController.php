@@ -19,8 +19,13 @@ class CourseController extends Controller
      */
     public function index(Request $request)
     {
-        // $data = Course::all();
-        $data = Course::with('teacher', 'responsible', 'template')->get();
+        $includes = [];
+        if ($request->query('includeTeacher')) $includes[] = 'teacher';
+        if ($request->query('includeResponsible')) $includes[] = 'responsible';
+        if ($request->query('includeTemplate')) $includes[] = 'template';
+        if ($request->query('includeInscriptions')) $includes[] = 'inscriptions';
+
+        $data = Course::with($includes)->get();
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
@@ -76,12 +81,18 @@ class CourseController extends Controller
      * @param  \App\Models\Course  $course
      * @return \Illuminate\Http\Response
      */
-    public function show(Course $course)
+    public function show(Request $request, Course $course)
     {
+        $includes = [];
+        if ($request->query('includeTeacher')) $includes[] = 'teacher';
+        if ($request->query('includeResponsible')) $includes[] = 'responsible';
+        if ($request->query('includeTemplate')) $includes[] = 'template';
+        if ($request->query('includeInscriptions')) $includes[] = 'inscriptions';
+
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
-            "data" => $course
+            "data" => $course->load($includes)
         ]);
     }
 
