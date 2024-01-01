@@ -17,8 +17,8 @@ class InscriptionSeeder extends Seeder
     {
         Inscription::factory()
             ->count(4)
-            ->hasStudents(2)
-            ->hasCourses(2)
+            ->hasStudent(2)
+            ->hasCourse(2)
             ->create();
     }
 }

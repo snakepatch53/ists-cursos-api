@@ -23,7 +23,7 @@ return new class extends Migration
             $table->string("address");
             $table->string("email");
             $table->string("cellphone", 20);
-            $table->string("phone");
+            $table->string("phone")->nullable()->default(null);
             $table->text("description");
             $table->string("entity_name");
             $table->string("entity_post");

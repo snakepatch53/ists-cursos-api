@@ -17,8 +17,8 @@ class CourseSeeder extends Seeder
     {
         Course::factory()
             ->count(2)
-            ->hasTeachers(2)
-            ->hasResponsibles(2)
+            ->hasTeacher(2)
+            ->hasResponsible(2)
             ->create();
     }
 }
