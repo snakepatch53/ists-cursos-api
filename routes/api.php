@@ -48,7 +48,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::resource('students', StudentController::class);
 
     // TEMPLATES
-    Route::resource('students', TemplateController::class);
+    Route::resource('templates', TemplateController::class);
 
     // INSCRIPTIONS
     Route::resource('inscriptions', InscriptionController::class);
