@@ -18,9 +18,13 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = User::all();
+        $includes = [];
+        if ($request->query('includeTeacher')) $includes[] = 'courseTeacher';
+        if ($request->query('includeResponsible')) $includes[] = 'courseResponsible';
+
+        $data = User::with($includes)->get();
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
@@ -217,6 +221,15 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        $user->load(['courseTeacher', 'courseResponsible']);
+        if ($user->courseTeacher->count() > 0 || $user->courseResponsible->count() > 0) {
+            return response()->json([
+                "success" => false,
+                "message" => "No se puede eliminar el recurso, tiene cursos asociados",
+                "data" => null
+            ]);
+        }
+
         // eliminamos tambien el archivo
         Storage::delete($this->PHOTO_PATH . "/" . $user->photo);
         Storage::delete($this->SIGNATURE_PATH . "/" . $user->signature);

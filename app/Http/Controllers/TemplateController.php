@@ -27,6 +27,8 @@ class TemplateController extends Controller
         ]);
     }
 
+    //api/v1/templates/1?includeCourses=true&includeInscriptions=true
+
     /**
      * Store a newly created resource in storage.
      *

@@ -59,11 +59,11 @@ class User extends Authenticatable
     }
 
 
-    public function coursesTeacher()
+    public function courseTeacher()
     {
         return $this->hasMany(Course::class, 'teacher_id');
     }
-    public function coursesResponsible()
+    public function courseResponsible()
     {
         return $this->hasMany(Course::class, 'responsible_id');
     }
