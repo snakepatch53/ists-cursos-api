@@ -15,8 +15,10 @@ class StudentController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Student::all();
-        if ($request->query('includeInscriptions')) $data->load('inscriptions');
+        $includes = [];
+        if ($request->query('includeInscriptions')) $includes[] = 'inscriptions';
+        $data = Student::with($includes)->get();
+
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
@@ -76,11 +78,12 @@ class StudentController extends Controller
      */
     public function show(Request $request, Student $student)
     {
-        if ($request->query('includeInscriptions')) $student->load('inscriptions');
+        $includes = [];
+        if ($request->query('includeInscriptions')) $includes[] = 'inscriptions';
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
-            "data" => $student
+            "data" => $student->load($includes)
         ]);
     }
 
