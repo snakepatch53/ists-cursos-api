@@ -9,9 +9,15 @@ class Institution extends Model
 {
     use HasFactory;
     protected $fillable = [
-        "approval",
-        "certificate_code",
-        "student_id",
-        "course_id"
+        "name",
+        "initials",
+        "logo"
     ];
+
+    protected $appends = ["logo_url"];
+
+    public function getLogoUrlAttribute()
+    {
+        return asset("storage/app/public/img_logos/" . $this->logo);
+    }
 }
