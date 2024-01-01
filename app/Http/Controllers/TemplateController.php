@@ -13,9 +13,13 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Template::all();
+        $includes = [];
+        if ($request->query('includeCourses')) $includes[] = 'courses';
+
+        $data = Template::with($includes)->get();
+
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
@@ -61,12 +65,15 @@ class TemplateController extends Controller
      * @param  \App\Models\Template  $template
      * @return \Illuminate\Http\Response
      */
-    public function show(Template $template)
+    public function show(Request $request, Template $template)
     {
+        $includes = [];
+        if ($request->query('includeCourses')) $includes[] = 'courses';
+
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
-            "data" => $template
+            "data" => $template->load($includes)
         ]);
     }
 
@@ -110,9 +117,16 @@ class TemplateController extends Controller
      */
     public function destroy(Template $template)
     {
+        $template->load('courses');
+        if ($template->courses->count() > 0) {
+            return response()->json([
+                "success" => false,
+                "message" => "No se puede eliminar el recurso, tiene cursos asociados",
+                "data" => $template
+            ]);
+        }
 
         $template->delete();
-
         return response()->json([
             "success" => true,
             "message" => "Recurso eliminado",
