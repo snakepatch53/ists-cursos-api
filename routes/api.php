@@ -7,6 +7,7 @@ use App\Http\Controllers\InstitutionController;
 use App\Http\Controllers\SocialNetworkController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TemplateController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -29,7 +30,8 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'v1'], function () {
 
     // USERS
-    // Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class);
+    Route::post('users/{id}', [UserController::class, 'updateWithImages']);
 
     // SOCIAL NETWORKS
     Route::resource('social-networks', SocialNetworkController::class);
@@ -40,6 +42,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     // INSTITUTIONS
     Route::resource('institutions', InstitutionController::class);
+    Route::post('institutions/{id}', [InstitutionController::class, 'updateWithLogo']);
 
     // STUDENTS
     Route::resource('students', StudentController::class);
@@ -52,4 +55,5 @@ Route::group(['prefix' => 'v1'], function () {
 
     // COURSES
     Route::resource('courses', CourseController::class);
+    Route::post('courses/{id}', [CourseController::class, 'updateWithImage']);
 });

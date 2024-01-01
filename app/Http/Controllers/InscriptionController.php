@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Inscription;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class InscriptionController extends Controller
 {
@@ -14,7 +15,12 @@ class InscriptionController extends Controller
      */
     public function index()
     {
-        //
+        $data = Inscription::all();
+        return response()->json([
+            "success" => true,
+            "message" => "Recursos encontrados",
+            "data" => $data
+        ]);
     }
 
     /**
@@ -25,7 +31,30 @@ class InscriptionController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            "approval" => "required",
+            "certificate_code" => "required",
+            "student_id" => "required",
+            "course_id" => "required",
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $validator->errors()->all()),
+                "data" => $validator->errors()
+            ]);
+        }
+
+
+        $data = Inscription::create($request->all());
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso creado",
+            "data" => $data
+        ]);
     }
 
     /**
@@ -36,7 +65,11 @@ class InscriptionController extends Controller
      */
     public function show(Inscription $inscription)
     {
-        //
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso encontrado",
+            "data" => $inscription
+        ]);
     }
 
     /**
@@ -48,7 +81,29 @@ class InscriptionController extends Controller
      */
     public function update(Request $request, Inscription $inscription)
     {
-        //
+        $rules = [
+            "approval" => "required",
+            "certificate_code" => "required",
+            "student_id" => "required",
+            "course_id" => "required",
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $validator->errors()->all()),
+                "data" => $validator->errors()
+            ]);
+        }
+
+        $inscription->update($request->all());
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "data" => $inscription
+        ]);
     }
 
     /**
@@ -59,6 +114,12 @@ class InscriptionController extends Controller
      */
     public function destroy(Inscription $inscription)
     {
-        //
+        $inscription->delete();
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso eliminado",
+            "data" => $inscription
+        ]);
     }
 }

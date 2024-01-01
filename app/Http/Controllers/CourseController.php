@@ -4,9 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
 
 class CourseController extends Controller
 {
+    private $IMAGE_PATH = "public/img_courses";
+    private $IMAGE_TYPE = "jpg,jpeg,png";
+
     /**
      * Display a listing of the resource.
      *
@@ -14,7 +19,12 @@ class CourseController extends Controller
      */
     public function index()
     {
-        //
+        $data = Course::all();
+        return response()->json([
+            "success" => true,
+            "message" => "Recursos encontrados",
+            "data" => $data
+        ]);
     }
 
     /**
@@ -25,7 +35,38 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            "name" => "required",
+            "duration" => "required",
+            "date_start" => "required",
+            "date_end" => "required",
+            "quota" => "required",
+            "whatsapp" => "required",
+            "teacher_id" => "required",
+            "responsible_id" => "required",
+            "template_id" => "required",
+            "image" => "required|file|mimes:" . $this->IMAGE_TYPE
+        ];
+
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $validator->errors()->all()),
+                "data" => $validator->errors()
+            ]);
+        }
+
+        $fileName = basename($request->file("image")->store($this->IMAGE_PATH));
+
+        $data = Course::create($request->except("image") + ["image" => $fileName]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso creado",
+            "data" => $data
+        ]);
     }
 
     /**
@@ -36,7 +77,11 @@ class CourseController extends Controller
      */
     public function show(Course $course)
     {
-        //
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso encontrado",
+            "data" => $course
+        ]);
     }
 
     /**
@@ -48,7 +93,86 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        //
+        $rules = [
+            "name" => "required",
+            "duration" => "required",
+            "date_start" => "required",
+            "date_end" => "required",
+            "quota" => "required",
+            "whatsapp" => "required",
+            "teacher_id" => "required",
+            "responsible_id" => "required",
+            "template_id" => "required"
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $validator->errors()->all()),
+                "data" => $validator->errors()
+            ]);
+        }
+
+        $course->update($request->all());
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "data" => $course
+        ]);
+    }
+
+    public function updateWithImage(Request $request, $id)
+    {
+        $rules = [
+            "name" => "required",
+            "duration" => "required",
+            "date_start" => "required",
+            "date_end" => "required",
+            "quota" => "required",
+            "whatsapp" => "required",
+            "teacher_id" => "required",
+            "responsible_id" => "required",
+            "template_id" => "required"
+        ];
+
+        $exists_image = $request->hasFile("image");
+        if ($exists_image) $rules["image"] = "required|file|mimes:" . $this->IMAGE_TYPE;
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $validator->errors()->all()),
+                "data" => $validator->errors()
+            ]);
+        }
+
+        $image = Course::find($id);
+        if (!$image) {
+            return response()->json([
+                "success" => false,
+                "message" => "Recurso no encontrado",
+                "data" => null
+            ]);
+        }
+
+        // eliminamos el archivo anterior
+        if ($exists_image) {
+            if (Storage::exists($this->IMAGE_PATH . "/" . $image->image)) Storage::delete($this->IMAGE_PATH . "/" . $image->image);
+            $fileName = basename($request->file("image")->store($this->IMAGE_PATH));
+            $image->update($request->except("image") + ["image" => $fileName]);
+        } else {
+            $image->update($request->all());
+        }
+
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "data" => $image
+        ]);
     }
 
     /**
@@ -59,6 +183,15 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        //
+        // eliminamos tambien el archivo
+        Storage::delete($this->IMAGE_PATH . "/" . $course->image);
+
+        $course->delete();
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso eliminado",
+            "data" => $course
+        ]);
     }
 }

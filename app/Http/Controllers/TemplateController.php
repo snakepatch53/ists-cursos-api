@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Template;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class TemplateController extends Controller
 {
@@ -14,7 +15,12 @@ class TemplateController extends Controller
      */
     public function index()
     {
-        //
+        $data = Template::all();
+        return response()->json([
+            "success" => true,
+            "message" => "Recursos encontrados",
+            "data" => $data
+        ]);
     }
 
     /**
@@ -25,7 +31,28 @@ class TemplateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            "name" => "required",
+            "code" => "required",
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $validator->errors()->all()),
+                "data" => $validator->errors()
+            ]);
+        }
+
+
+        $data = Template::create($request->all());
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso creado",
+            "data" => $data
+        ]);
     }
 
     /**
@@ -36,7 +63,11 @@ class TemplateController extends Controller
      */
     public function show(Template $template)
     {
-        //
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso encontrado",
+            "data" => $template
+        ]);
     }
 
     /**
@@ -48,7 +79,27 @@ class TemplateController extends Controller
      */
     public function update(Request $request, Template $template)
     {
-        //
+        $rules = [
+            "name" => "required",
+            "code" => "required"
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => implode(" - ", $validator->errors()->all()),
+                "data" => $validator->errors()
+            ]);
+        }
+
+        $template->update($request->all());
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "data" => $template
+        ]);
     }
 
     /**
@@ -59,6 +110,13 @@ class TemplateController extends Controller
      */
     public function destroy(Template $template)
     {
-        //
+
+        $template->delete();
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso eliminado",
+            "data" => $template
+        ]);
     }
 }

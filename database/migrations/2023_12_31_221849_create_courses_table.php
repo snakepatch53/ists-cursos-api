@@ -17,10 +17,10 @@ return new class extends Migration
             $table->id();
             $table->text("image");
             $table->string("name");
-            $table->string("duration");
-            $table->string("date_start");
-            $table->string("date_end");
-            $table->text("quota");
+            $table->integer("duration");
+            $table->date("date_start");
+            $table->date("date_end");
+            $table->integer("quota");
             $table->text("whatsapp");
             $table->foreignId('teacher_id')->constrained('users');
             $table->foreignId('responsible_id')->constrained('users');
