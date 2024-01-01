@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Course;
 use App\Models\Inscription;
 use App\Models\Student;
 use Illuminate\Http\Request;
@@ -67,7 +68,6 @@ class ComboController extends Controller
             ->whereHas("student", function ($query) use ($request) {
                 $query->where("dni", $request->student["dni"]);
             })->first();
-
         if ($inscription) return response()->json([
             "success" => false,
             "message" => "El estudiante ya se encuentra inscrito en el curso",
@@ -75,8 +75,16 @@ class ComboController extends Controller
             "data" => null
         ]);
 
-        // una vez validado el estudiante y que no este inscrito en el curso, lo inscribimos
+        // validamos si hay cupos disponibles en el curso
+        $course = Course::find($request->course_id);
+        if ($course->quota <= $course->inscriptions()->count()) return response()->json([
+            "success" => false,
+            "message" => "El curso no tiene cupos disponibles",
+            "errors" => ["course_id" => ["El curso no tiene cupos disponibles"]],
+            "data" => null
+        ]);
 
+        // una vez validado el estudiante y que no este inscrito en el curso, lo inscribimos
         $inscription = Inscription::create([
             "certificate_code" => "",
             "student_id" => $student->id,
