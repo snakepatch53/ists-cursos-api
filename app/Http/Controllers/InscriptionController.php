@@ -13,9 +13,9 @@ class InscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Inscription::all();
+        $data = Inscription::with('student', 'course')->get();
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
@@ -47,7 +47,6 @@ class InscriptionController extends Controller
             ]);
         }
 
-
         $data = Inscription::create($request->all());
 
         return response()->json([
@@ -65,6 +64,7 @@ class InscriptionController extends Controller
      */
     public function show(Inscription $inscription)
     {
+        $inscription->load('student', 'course');
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",

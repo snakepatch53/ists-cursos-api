@@ -13,9 +13,10 @@ class StudentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $data = Student::all();
+        if ($request->query('includeInscriptions')) $data->load('inscriptions');
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
@@ -73,8 +74,9 @@ class StudentController extends Controller
      * @param  \App\Models\Student  $student
      * @return \Illuminate\Http\Response
      */
-    public function show(Student $student)
+    public function show(Request $request, Student $student)
     {
+        if ($request->query('includeInscriptions')) $student->load('inscriptions');
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
@@ -134,8 +136,13 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-        $student->delete();
 
+        // Validar si el id esta siendo usado en otra tabla
+        $student->with('inscriptions');
+        return $student;
+
+
+        $student->delete();
         return response()->json([
             "success" => true,
             "message" => "Recurso eliminado",

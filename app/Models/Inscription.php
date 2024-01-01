@@ -16,12 +16,12 @@ class Inscription extends Model
         "course_id"
     ];
 
-    public function students()
+    public function student()
     {
         return $this->belongsTo(Student::class);
     }
 
-    public function courses()
+    public function course()
     {
         return $this->belongsTo(Course::class);
     }

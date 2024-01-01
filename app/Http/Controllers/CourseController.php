@@ -17,9 +17,10 @@ class CourseController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $data = Course::all();
+        // $data = Course::all();
+        $data = Course::with('teacher', 'responsible', 'template')->get();
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
