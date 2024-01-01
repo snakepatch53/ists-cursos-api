@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Student;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator as FacadesValidator;
+use Illuminate\Support\Facades\Validator;
 
 class StudentController extends Controller
 {
@@ -48,7 +48,7 @@ class StudentController extends Controller
             "entity_phone" => "required"
         ];
 
-        $validator = FacadesValidator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
@@ -108,7 +108,7 @@ class StudentController extends Controller
             "entity_phone" => "required"
         ];
 
-        $validator = FacadesValidator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,

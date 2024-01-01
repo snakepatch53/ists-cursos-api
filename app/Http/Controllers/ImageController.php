@@ -108,6 +108,15 @@ class ImageController extends Controller
 
     public function updateWithImage(Request $request, $id)
     {
+        $image = Image::find($id);
+        if (!$image) {
+            return response()->json([
+                "success" => false,
+                "message" => "Recurso no encontrado",
+                "data" => null
+            ]);
+        }
+
         $rules = ["description" => "required"];
 
         $exists_image = $request->hasFile("image");
@@ -119,15 +128,6 @@ class ImageController extends Controller
                 "success" => false,
                 "message" => implode(" - ", $validator->errors()->all()),
                 "data" => $validator->errors()
-            ]);
-        }
-
-        $image = Image::find($id);
-        if (!$image) {
-            return response()->json([
-                "success" => false,
-                "message" => "Recurso no encontrado",
-                "data" => null
             ]);
         }
 

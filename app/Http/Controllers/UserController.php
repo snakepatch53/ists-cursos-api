@@ -65,6 +65,16 @@ class UserController extends Controller
             ]);
         }
 
+        // exist user with email or dni
+        if (User::where("email", $request->email)->orWhere("dni", $request->dni)->first()) {
+            return response()->json([
+                "success" => false,
+                "message" => "El email o dni ya existe",
+                "data" => null
+            ]);
+        }
+
+
         $fileName_photo = basename($request->file("photo")->store($this->PHOTO_PATH));
         $fileName_signature = basename($request->file("signature")->store($this->SIGNATURE_PATH));
 
@@ -79,6 +89,15 @@ class UserController extends Controller
 
     public function updateWithImages(Request $request, $id)
     {
+        $user = User::find($id);
+        if (!$user) {
+            return response()->json([
+                "success" => false,
+                "message" => "Recurso no encontrado",
+                "data" => null
+            ]);
+        }
+
         $rules = [
             "name" => "required",
             "lastname" => "required",
@@ -102,40 +121,31 @@ class UserController extends Controller
             ]);
         }
 
-        $user = User::find($id);
-        if (!$user) {
-            return response()->json([
-                "success" => false,
-                "message" => "Recurso no encontrado",
-                "data" => null
-            ]);
-        }
-
-        $response = [
-            "success" => true,
-            "message" => "Recurso actualizado",
-            "data" => $user
-        ];
-
         $except = [];
         $field_file = [];
 
         // eliminamos el archivo anterior
         if ($exists_photo) {
             if (Storage::exists($this->PHOTO_PATH . "/" . $user->photo)) Storage::delete($this->PHOTO_PATH . "/" . $user->photo);
-            $fileName = basename($request->file("image")->store($this->PHOTO_PATH));
+            $fileName = basename($request->file("photo")->store($this->PHOTO_PATH));
             $except[] = "photo";
             $field_file["photo"] = $fileName;
         }
 
         if ($exists_signature) {
             if (Storage::exists($this->SIGNATURE_PATH . "/" . $user->signature)) Storage::delete($this->SIGNATURE_PATH . "/" . $user->signature);
-            $fileName = basename($request->file("image")->store($this->SIGNATURE_PATH));
+            $fileName = basename($request->file("signature")->store($this->SIGNATURE_PATH));
             $except[] = "signature";
             $field_file["signature"] = $fileName;
         }
 
         $user->update($request->except($except) + $field_file);
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "data" => $user
+        ]);
     }
 
     /**
@@ -205,8 +215,18 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(User $user)
     {
-        //
+        // eliminamos tambien el archivo
+        Storage::delete($this->PHOTO_PATH . "/" . $user->photo);
+        Storage::delete($this->SIGNATURE_PATH . "/" . $user->signature);
+
+        $user->delete();
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso eliminado",
+            "data" => $user
+        ]);
     }
 }

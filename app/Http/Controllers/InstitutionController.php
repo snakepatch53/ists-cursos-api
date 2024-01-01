@@ -109,6 +109,16 @@ class InstitutionController extends Controller
 
     public function updateWithLogo(Request $request, $id)
     {
+        $institution = Institution::find($id);
+        if (!$institution) {
+            return response()->json([
+                "success" => false,
+                "message" => "Recurso no encontrado",
+                "data" => null
+            ]);
+        }
+
+
         $rules = [
             "name" => "required",
             "initials" => "required"
@@ -125,15 +135,6 @@ class InstitutionController extends Controller
                 "success" => false,
                 "message" => implode(" - ", $validator->errors()->all()),
                 "data" => $validator->errors()
-            ]);
-        }
-
-        $institution = Institution::find($id);
-        if (!$institution) {
-            return response()->json([
-                "success" => false,
-                "message" => "Recurso no encontrado",
-                "data" => null
             ]);
         }
 
