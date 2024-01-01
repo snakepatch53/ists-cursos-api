@@ -195,11 +195,17 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-        // eliminamos tambien el archivo
+        $course->load('inscriptions');
+        if ($course->inscriptions->count() > 0) {
+            return response()->json([
+                "success" => false,
+                "message" => "No se puede eliminar el curso porque tiene inscripciones asociadas",
+                "data" => $course
+            ]);
+        }
+
         Storage::delete($this->IMAGE_PATH . "/" . $course->image);
-
         $course->delete();
-
         return response()->json([
             "success" => true,
             "message" => "Recurso eliminado",

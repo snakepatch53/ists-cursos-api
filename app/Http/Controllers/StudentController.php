@@ -139,11 +139,14 @@ class StudentController extends Controller
      */
     public function destroy(Student $student)
     {
-
-        // Validar si el id esta siendo usado en otra tabla
-        $student->with('inscriptions');
-        return $student;
-
+        $student->load('inscriptions');
+        if ($student->inscriptions->count() > 0) {
+            return response()->json([
+                "success" => false,
+                "message" => "No se puede eliminar el estudiante porque tiene inscripciones asociadas",
+                "data" => $student
+            ]);
+        }
 
         $student->delete();
         return response()->json([
