@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ComboController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InscriptionController;
@@ -56,4 +57,7 @@ Route::group(['prefix' => 'v1'], function () {
     // COURSES
     Route::resource('courses', CourseController::class);
     Route::post('courses/{id}', [CourseController::class, 'updateWithImage']);
+
+    // COMBOS
+    Route::post('enroll-register-student-or-not', [ComboController::class, 'enroll_registerStudentOrNot']);
 });

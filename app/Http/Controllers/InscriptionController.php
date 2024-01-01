@@ -17,7 +17,11 @@ class InscriptionController extends Controller
      */
     public function index(Request $request)
     {
-        $data = Inscription::with('student', 'course')->get();
+        $includes = [];
+        if ($request->query('includeStudent')) $includes[] = 'student';
+        if ($request->query('includeCourse')) $includes[] = 'course';
+
+        $data = Inscription::with($includes)->get();
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
