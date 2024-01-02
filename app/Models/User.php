@@ -24,7 +24,14 @@ class User extends Authenticatable
         "signature",
         "photo",
         "email",
-        'password'
+        'password',
+        "role",
+    ];
+
+    static $ROLES = [
+        1 => "Administrador",
+        2 => "Responsable",
+        3 => "Profesor",
     ];
 
     /**

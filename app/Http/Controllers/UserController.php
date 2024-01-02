@@ -21,8 +21,8 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $includes = [];
-        if ($request->query('includeTeacher')) $includes[] = 'courseTeacher';
-        if ($request->query('includeResponsible')) $includes[] = 'courseResponsible';
+        if ($request->query('includeCoursesTeacher')) $includes[] = 'courseTeacher';
+        if ($request->query('includeCoursesResponsible')) $includes[] = 'courseResponsible';
 
         $data = User::with($includes)->get();
         return response()->json([
@@ -50,30 +50,39 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+
+        $validator = Validator::make($request->all(),  [
             "name" => "required",
             "lastname" => "required",
-            "dni" => "required",
-            "email" => "required",
+            "dni" => "required|unique:users,dni",
+            "email" => "required|email|unique:users,email",
             "password" => "required",
+            "role" => "required|in:" . implode(",", array_keys(User::$ROLES)),
             "photo" => "required|file|mimes:" . $this->IMAGE_TYPE,
             "signature" => "required|file|mimes:" . $this->IMAGE_TYPE
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
+        ], [
+            "name.required" => "El campo nombre es requerido",
+            "lastname.required" => "El campo apellido es requerido",
+            "dni.required" => "El campo dni es requerido",
+            "dni.unique" => "El dni ya existe",
+            "email.required" => "El campo email es requerido",
+            "email.email" => "El campo email no es valido",
+            "email.unique" => "El email ya existe",
+            "password.required" => "El campo password es requerido",
+            "role.required" => "El campo rol es requerido",
+            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", array_keys(User::$ROLES)),
+            "photo.required" => "El campo foto es requerido",
+            "photo.file" => "El campo foto debe ser un archivo",
+            "signature.required" => "El campo firma es requerido",
+            "signature.file" => "El campo firma debe ser un archivo",
+            "photo.mimes" => "El campo foto debe ser un archivo de tipo: " . $this->IMAGE_TYPE,
+            "signature.mimes" => "El campo firma debe ser un archivo de tipo: " . $this->IMAGE_TYPE
+        ]);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
-            ]);
-        }
-
-        // exist user with email or dni
-        if (User::where("email", $request->email)->orWhere("dni", $request->dni)->first()) {
-            return response()->json([
-                "success" => false,
-                "message" => "El email o dni ya existe",
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
                 "data" => null
             ]);
         }
@@ -84,10 +93,13 @@ class UserController extends Controller
 
         $data = User::create($request->except(["photo", "signature"]) + ["photo" => $fileName_photo, "signature" => $fileName_signature]);
 
+        $token = $data->createToken('authToken')->plainTextToken;
+
         return response()->json([
             "success" => true,
             "message" => "Recurso creado",
-            "data" => $data
+            "data" => $data,
+            "token" => $token
         ]);
     }
 
@@ -105,9 +117,10 @@ class UserController extends Controller
         $rules = [
             "name" => "required",
             "lastname" => "required",
-            "dni" => "required",
-            "email" => "required",
-            "password" => "required"
+            'dni' => 'required|unique:users,dni,' . $id,
+            'email' => 'required|email|unique:users,email,' . $id,
+            "password" => "required",
+            "role" => "required|in:" . implode(",", array_keys(User::$ROLES)),
         ];
 
         $exists_photo = $request->hasFile("photo");
@@ -116,12 +129,30 @@ class UserController extends Controller
         $exists_signature = $request->hasFile("signature");
         if ($exists_signature) $rules["signature"] = "required|file|mimes:" . $this->IMAGE_TYPE;
 
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, [
+            "name.required" => "El campo nombre es requerido",
+            "lastname.required" => "El campo apellido es requerido",
+            "dni.required" => "El campo dni es requerido",
+            "dni.unique" => "El dni ya existe",
+            "email.required" => "El campo email es requerido",
+            "email.email" => "El campo email no es valido",
+            "email.unique" => "El email ya existe",
+            "password.required" => "El campo password es requerido",
+            "role.required" => "El campo rol es requerido",
+            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", array_keys(User::$ROLES)),
+            "photo.required" => "El campo foto es requerido",
+            "photo.file" => "El campo foto debe ser un archivo",
+            "signature.required" => "El campo firma es requerido",
+            "signature.file" => "El campo firma debe ser un archivo",
+            "photo.mimes" => "El campo foto debe ser un archivo de tipo: " . $this->IMAGE_TYPE,
+            "signature.mimes" => "El campo firma debe ser un archivo de tipo: " . $this->IMAGE_TYPE
+        ]);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
             ]);
         }
 
@@ -148,6 +179,7 @@ class UserController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
+            "errors" => null,
             "data" => $user
         ]);
     }
@@ -158,12 +190,17 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(User $user)
+    public function show(Request $request, User $user)
     {
+        $includes = [];
+        if ($request->query('includeCoursesTeacher')) $includes[] = 'courseTeacher';
+        if ($request->query('includeCoursesResponsible')) $includes[] = 'courseResponsible';
+
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
-            "data" => $user
+            "errors" => null,
+            "data" => $user->load($includes)
         ]);
     }
 
@@ -192,15 +229,25 @@ class UserController extends Controller
             "lastname" => "required",
             "dni" => "required",
             "email" => "required",
-            "password" => "required"
+            "password" => "required",
+            "role" => "required|in:" . implode(",", array_keys(User::$ROLES)),
         ];
 
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, [
+            "name.required" => "El campo nombre es requerido",
+            "lastname.required" => "El campo apellido es requerido",
+            "dni.required" => "El campo dni es requerido",
+            "email.required" => "El campo email es requerido",
+            "password.required" => "El campo password es requerido",
+            "role.required" => "El campo rol es requerido",
+            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", array_keys(User::$ROLES)),
+        ]);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
             ]);
         }
 
@@ -239,6 +286,7 @@ class UserController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso eliminado",
+            "errors" => null,
             "data" => $user
         ]);
     }
