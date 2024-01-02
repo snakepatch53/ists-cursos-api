@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
@@ -91,6 +92,7 @@ class UserController extends Controller
         $fileName_photo = basename($request->file("photo")->store($this->PHOTO_PATH));
         $fileName_signature = basename($request->file("signature")->store($this->SIGNATURE_PATH));
 
+        $request->merge(["password" => Hash::make($request->password)]);
         $data = User::create($request->except(["photo", "signature"]) + ["photo" => $fileName_photo, "signature" => $fileName_signature]);
 
         $token = $data->createToken('authToken')->plainTextToken;
@@ -98,7 +100,92 @@ class UserController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso creado",
+            "errors" => null,
             "data" => $data,
+            "token" => $token,
+        ]);
+    }
+
+
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, User $user)
+    {
+        $includes = [];
+        if ($request->query('includeCoursesTeacher')) $includes[] = 'courseTeacher';
+        if ($request->query('includeCoursesResponsible')) $includes[] = 'courseResponsible';
+
+        $token = $user->createToken('authToken');
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso encontrado",
+            "errors" => null,
+            "data" => $user->load($includes),
+            // "token" => $token
+        ]);
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
+    {
+        //
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, User $user)
+    {
+        $rules = [
+            "name" => "required",
+            "lastname" => "required",
+            "dni" => "required",
+            "email" => "required",
+            "password" => "required",
+            "role" => "required|in:" . implode(",", array_keys(User::$ROLES)),
+        ];
+
+        $validator = Validator::make($request->all(), $rules, [
+            "name.required" => "El campo nombre es requerido",
+            "lastname.required" => "El campo apellido es requerido",
+            "dni.required" => "El campo dni es requerido",
+            "email.required" => "El campo email es requerido",
+            "password.required" => "El campo password es requerido",
+            "role.required" => "El campo rol es requerido",
+            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", array_keys(User::$ROLES)),
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
+            ]);
+        }
+
+        $user->update($request->all());
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "data" => $user,
             "token" => $token
         ]);
     }
@@ -176,87 +263,14 @@ class UserController extends Controller
 
         $user->update($request->except($except) + $field_file);
 
-        return response()->json([
-            "success" => true,
-            "message" => "Recurso actualizado",
-            "errors" => null,
-            "data" => $user
-        ]);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request, User $user)
-    {
-        $includes = [];
-        if ($request->query('includeCoursesTeacher')) $includes[] = 'courseTeacher';
-        if ($request->query('includeCoursesResponsible')) $includes[] = 'courseResponsible';
-
-        return response()->json([
-            "success" => true,
-            "message" => "Recurso encontrado",
-            "errors" => null,
-            "data" => $user->load($includes)
-        ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, User $user)
-    {
-        $rules = [
-            "name" => "required",
-            "lastname" => "required",
-            "dni" => "required",
-            "email" => "required",
-            "password" => "required",
-            "role" => "required|in:" . implode(",", array_keys(User::$ROLES)),
-        ];
-
-        $validator = Validator::make($request->all(), $rules, [
-            "name.required" => "El campo nombre es requerido",
-            "lastname.required" => "El campo apellido es requerido",
-            "dni.required" => "El campo dni es requerido",
-            "email.required" => "El campo email es requerido",
-            "password.required" => "El campo password es requerido",
-            "role.required" => "El campo rol es requerido",
-            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", array_keys(User::$ROLES)),
-        ]);
-        if ($validator->fails()) {
-            return response()->json([
-                "success" => false,
-                "message" => $validator->errors()->first(),
-                "errors" => $validator->errors(),
-                "data" => null
-            ]);
-        }
-
-        $user->update($request->all());
+        $token = $user->createToken('authToken')->plainTextToken;
 
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
-            "data" => $user
+            "errors" => null,
+            "data" => $user,
+            "token" => $token
         ]);
     }
 
