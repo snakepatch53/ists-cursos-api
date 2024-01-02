@@ -43,48 +43,39 @@ class CourseController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $validator = Validator::make($request->all(), [
             "name" => "required",
             "duration" => "required",
             "date_start" => "required",
             "date_end" => "required",
             "quota" => "required",
             "whatsapp" => "required",
-            "teacher_id" => "required",
-            "responsible_id" => "required",
-            "template_id" => "required",
+            'teacher_id' => 'required|exists:users,id',
+            'responsible_id' => 'required|exists:users,id',
+            'template_id' => 'required|exists:templates,id',
             "image" => "required|file|mimes:" . $this->IMAGE_TYPE
-        ];
-
-
-        $validator = Validator::make($request->all(), $rules);
+        ], [
+            'name.required' => 'El nombre es requerido',
+            'duration.required' => 'La duración es requerida',
+            'date_start.required' => 'La fecha de inicio es requerida',
+            'date_end.required' => 'La fecha de fin es requerida',
+            'quota.required' => 'El numero de cupos es requerido',
+            'whatsapp.required' => 'El link de grupo de whatsapp es requerido',
+            'teacher_id.required' => 'El docente es requerido',
+            'responsible_id.required' => 'El responsable es requerido',
+            'template_id.required' => 'La plantilla es requerida',
+            'teacher_id.exists' => 'El docente no existe',
+            'responsible_id.exists' => 'El responsable no existe',
+            'template_id.exists' => 'La plantilla no existe',
+            'image.required' => 'La imagen es requerida',
+            'image.file' => 'La imagen debe ser un archivo',
+            'image.mimes' => 'La imagen debe ser de tipo ' . $this->IMAGE_TYPE
+        ]);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
-            ]);
-        }
-
-        $errors = [];
-
-        //validaciones del docente
-        $teacher = User::find($request->teacher_id);
-        if (!$teacher) $errors[] = "El docente no existe";
-
-        //validaciones del responsable
-        $responsible = User::find($request->responsible_id);
-        if (!$responsible) $errors[] = "El responsable no existe";
-
-        //validaciones de la plantilla
-        $template = Template::find($request->template_id);
-        if (!$template) $errors[] = "La plantilla no existe";
-
-        // Si hay errores
-        if (count($errors) > 0) {
-            return response()->json([
-                "success" => false,
-                "message" => implode(" - ", $errors),
+                "message" => $validator->errors()->first(),
+                'errors' => $validator->errors(),
                 "data" => null
             ]);
         }
@@ -119,6 +110,7 @@ class CourseController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
+            'errors' => null,
             "data" => $course->load($includes)
         ]);
     }
@@ -132,46 +124,39 @@ class CourseController extends Controller
      */
     public function update(Request $request, Course $course)
     {
-        $rules = [
-            "name" => "required",
-            "duration" => "required",
-            "date_start" => "required",
-            "date_end" => "required",
-            "quota" => "required",
-            "whatsapp" => "required",
-            "teacher_id" => "required",
-            "responsible_id" => "required",
-            "template_id" => "required"
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make(
+            $request->all(),
+            [
+                "name" => "required",
+                "duration" => "required",
+                "date_start" => "required",
+                "date_end" => "required",
+                "quota" => "required",
+                "whatsapp" => "required",
+                'teacher_id' => 'required|exists:users,id',
+                'responsible_id' => 'required|exists:users,id',
+                'template_id' => 'required|exists:templates,id',
+            ],
+            [
+                'name.required' => 'El nombre es requerido',
+                'duration.required' => 'La duración es requerida',
+                'date_start.required' => 'La fecha de inicio es requerida',
+                'date_end.required' => 'La fecha de fin es requerida',
+                'quota.required' => 'El numero de cupos es requerido',
+                'whatsapp.required' => 'El link de grupo de whatsapp es requerido',
+                'teacher_id.required' => 'El docente es requerido',
+                'responsible_id.required' => 'El responsable es requerido',
+                'template_id.required' => 'La plantilla es requerida',
+                'teacher_id.exists' => 'El docente no existe',
+                'responsible_id.exists' => 'El responsable no existe',
+                'template_id.exists' => 'La plantilla no existe',
+            ]
+        );
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
-            ]);
-        }
-
-        $errors = [];
-
-        //validaciones del docente
-        $teacher = User::find($request->teacher_id);
-        if (!$teacher) $errors[] = "El docente no existe";
-
-        //validaciones del responsable
-        $responsible = User::find($request->responsible_id);
-        if (!$responsible) $errors[] = "El responsable no existe";
-
-        //validaciones de la plantilla
-        $template = Template::find($request->template_id);
-        if (!$template) $errors[] = "La plantilla no existe";
-
-        // Si hay errores
-        if (count($errors) > 0) {
-            return response()->json([
-                "success" => false,
-                "message" => implode(" - ", $errors),
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
                 "data" => null
             ]);
         }
@@ -181,67 +166,57 @@ class CourseController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
+            "errors" => null,
             "data" => $course
         ]);
     }
 
     public function updateWithImage(Request $request, $id)
     {
+        $request->merge(["id" => $id]);
+
         $rules = [
+            'id' => 'exists:courses,id',
             "name" => "required",
             "duration" => "required",
             "date_start" => "required",
             "date_end" => "required",
             "quota" => "required",
             "whatsapp" => "required",
-            "teacher_id" => "required",
-            "responsible_id" => "required",
-            "template_id" => "required"
+            'teacher_id' => 'required|exists:users,id',
+            'responsible_id' => 'required|exists:users,id',
+            'template_id' => 'required|exists:templates,id',
         ];
 
         $exists_image = $request->hasFile("image");
         if ($exists_image) $rules["image"] = "required|file|mimes:" . $this->IMAGE_TYPE;
 
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, [
+            'id.exists' => 'El id del curso no existe',
+            'name.required' => 'El nombre es requerido',
+            'duration.required' => 'La duración es requerida',
+            'date_start.required' => 'La fecha de inicio es requerida',
+            'date_end.required' => 'La fecha de fin es requerida',
+            'quota.required' => 'El numero de cupos es requerido',
+            'whatsapp.required' => 'El link de grupo de whatsapp es requerido',
+            'teacher_id.required' => 'El docente es requerido',
+            'responsible_id.required' => 'El responsable es requerido',
+            'template_id.required' => 'La plantilla es requerida',
+            'teacher_id.exists' => 'El docente no existe',
+            'responsible_id.exists' => 'El responsable no existe',
+            'template_id.exists' => 'La plantilla no existe',
+        ]);
+
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
-            ]);
-        }
-
-        $errors = [];
-
-        //validaciones del docente
-        $teacher = User::find($request->teacher_id);
-        if (!$teacher) $errors[] = "El docente no existe";
-
-        //validaciones del responsable
-        $responsible = User::find($request->responsible_id);
-        if (!$responsible) $errors[] = "El responsable no existe";
-
-        //validaciones de la plantilla
-        $template = Template::find($request->template_id);
-        if (!$template) $errors[] = "La plantilla no existe";
-
-        // Si hay errores
-        if (count($errors) > 0) {
-            return response()->json([
-                "success" => false,
-                "message" => implode(" - ", $errors),
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
                 "data" => null
             ]);
         }
 
         $image = Course::find($id);
-        if (!$image) {
-            return response()->json([
-                "success" => false,
-                "message" => "Recurso no encontrado",
-                "data" => null
-            ]);
-        }
 
         // eliminamos el archivo anterior
         if ($exists_image) {
@@ -256,6 +231,7 @@ class CourseController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
+            "errors" => null,
             "data" => $image
         ]);
     }
@@ -268,12 +244,12 @@ class CourseController extends Controller
      */
     public function destroy(Course $course)
     {
-
         if ($course->inscriptions->count() > 0) {
             return response()->json([
                 "success" => false,
                 "message" => "No se puede eliminar el curso porque tiene inscripciones asociadas",
-                "data" => $course
+                "errors" => ["course_id" => ["No se puede eliminar el curso porque tiene inscripciones asociadas"]],
+                "data" => null
             ]);
         }
 
@@ -282,6 +258,7 @@ class CourseController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso eliminado",
+            "errors" => null,
             "data" => $course
         ]);
     }

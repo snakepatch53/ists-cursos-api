@@ -22,11 +22,16 @@ class Course extends Model
         "template_id",
     ];
 
-    protected $appends = ["image_url"];
+    protected $appends = ["image_url", "quota_available"];
 
     public function getImageUrlAttribute()
     {
         return asset("storage/app/public/img_courses/" . $this->image);
+    }
+
+    public function getQuotaAvailableAttribute()
+    {
+        return $this->quota - $this->inscriptions->count();
     }
 
     public function teacher()
