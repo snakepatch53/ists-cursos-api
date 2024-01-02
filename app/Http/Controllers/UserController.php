@@ -3,16 +3,75 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
     private $PHOTO_PATH = "public/img_users";
     private $SIGNATURE_PATH = "public/img_signature";
     private $IMAGE_TYPE = "jpg,jpeg,png";
+
+
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            "password" => "required"
+        ], [
+            "username.required" => "El campo username es requerido y debe ser el email o el dni",
+            "password.required" => "El campo password es requerido"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
+            ]);
+        }
+
+        // en usuario puede ser el email o el dni, por lo tanto en attempt validamos en ambos campos
+
+        if (!Auth::attempt(['email' => $request->username, 'password' => $request->password]) && !Auth::attempt(['dni' => $request->username, 'password' => $request->password])) {
+            return response()->json([
+                "success" => false,
+                "message" => "Credenciales incorrectas",
+                "errors" => null,
+                "data" => null
+            ]);
+        }
+
+        $user = User::where('email', $request->username)->orWhere('dni', $request->username)->first();
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            "success" => true,
+            "message" => "Sesión iniciada",
+            "errors" => null,
+            "data" => $user,
+            "token" => $token
+        ]);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->tokens()->delete();
+
+        return response()->json([
+            "success" => true,
+            "message" => "Sesión cerrada",
+            "errors" => null,
+            "data" => null
+        ]);
+    }
 
     /**
      * Display a listing of the resource.
