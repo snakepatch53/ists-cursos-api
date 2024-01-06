@@ -55,7 +55,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $appends = ["photo_url", "signature_url"];
+    protected $appends = ["photo_url", "signature_url", "role_name"];
 
     public function getPhotoUrlAttribute()
     {
@@ -65,6 +65,11 @@ class User extends Authenticatable
     public function getSignatureUrlAttribute()
     {
         return asset("storage/app/public/img_signature/" . $this->signature);
+    }
+
+    public function getRoleNameAttribute()
+    {
+        return self::$ROLES[$this->role];
     }
 
 
