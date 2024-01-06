@@ -31,11 +31,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'v1'], function () {
 
     // USERS
-    Route::resource('users', UserController::class);
-    Route::post('users/{id}', [UserController::class, 'updateWithImages']);
     Route::post('login', [UserController::class, 'login']);
+    Route::resource('users', UserController::class);
 
     Route::middleware('auth:sanctum')->group(function () {
+        Route::post('users/{id}', [UserController::class, 'updateWithImages']);
         Route::post('logout', [UserController::class, 'logout']);
     });
 

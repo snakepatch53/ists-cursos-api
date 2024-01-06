@@ -21,7 +21,9 @@ return new class extends Migration
             $table->string('signature');
             $table->string('photo');
             $table->string('email')->unique();
-            $table->integer('role')->default(1);
+            $table->integer('role');
+            $table->text('description');
+            $table->text('facebook'); //fb_url
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
