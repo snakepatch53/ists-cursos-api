@@ -1,5 +1,9 @@
 # 📝 RESUMEN DE LA APLICACION WEB
 
+<div style="text-align:center">
+    <img src="./public/img/logo.png" style="width:200px;aspect-ratio:1/1;object-fit:cover;background:white;border-radius:50%;margin:50px" />
+</div>
+
 ## 📋 DATOS GENERALES
 
 <ul>
