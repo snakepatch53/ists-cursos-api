@@ -30,10 +30,10 @@ class User extends Authenticatable
         "facebook"
     ];
 
-    static $ROLES = [
-        1 => "Administrador",
-        2 => "Responsable",
-        3 => "Profesor",
+    public static $_ROLES = [
+        "Administrador",
+        "Responsable",
+        "Profesor"
     ];
 
     /**
@@ -55,7 +55,7 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    protected $appends = ["photo_url", "signature_url", "role_name"];
+    protected $appends = ["photo_url", "signature_url"];
 
     public function getPhotoUrlAttribute()
     {
@@ -65,11 +65,6 @@ class User extends Authenticatable
     public function getSignatureUrlAttribute()
     {
         return asset("storage/app/public/img_signature/" . $this->signature);
-    }
-
-    public function getRoleNameAttribute()
-    {
-        return self::$ROLES[$this->role];
     }
 
 

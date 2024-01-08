@@ -26,6 +26,9 @@ class Student extends Model
         "entity_phone"
     ];
 
+    public static $_INSTRUCTIONS = ["Primaria", "Secundaria", "Técnico", "Superior"];
+    public static $_SEXS = ["Masculino", "Femenino", "Otro"];
+
     public function inscriptions()
     {
         return $this->hasMany(Inscription::class);

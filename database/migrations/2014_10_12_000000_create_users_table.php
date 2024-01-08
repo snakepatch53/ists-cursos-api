@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -21,8 +22,7 @@ return new class extends Migration
             $table->string('signature');
             $table->string('photo');
             $table->string('email')->unique();
-            $table->integer('role');
-            // $table->enum("role", ["admin", "responsible", "teacher"]);
+            $table->enum("role", User::$_ROLES);
             $table->text('description');
             $table->text('facebook'); //fb_url
             $table->timestamp('email_verified_at')->nullable();

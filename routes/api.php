@@ -66,29 +66,21 @@ Route::group(['prefix' => 'v1'], function () {
 
     // USERS
     Route::post('login', [UserController::class, 'login']);
-    Route::get('users', [UserController::class, 'index']);
-    Route::get('users/{id}', [UserController::class, 'show']);
+    Route::resource('users', UserController::class)->except(['store', 'update', 'destroy']);
     // SOCIAL NETWORKS
-    Route::get('social-networks', [SocialNetworkController::class, 'index']);
-    Route::get('social-networks/{id}', [SocialNetworkController::class, 'show']);
+    Route::resource('social-networks', SocialNetworkController::class)->except(['store', 'update', 'destroy']);
     // IMAGES
-    Route::get('images', [ImageController::class, 'index']);
-    Route::get('images/{id}', [ImageController::class, 'show']);
+    Route::resource('images', ImageController::class)->except(['store', 'update', 'destroy']);
     // INSTITUTIONS
-    Route::get('institutions', [InstitutionController::class, 'index']);
-    Route::get('institutions/{id}', [InstitutionController::class, 'show']);
+    Route::resource('institutions', InstitutionController::class)->except(['store', 'update', 'destroy']);
     // STUDENTS
-    Route::get('students', [StudentController::class, 'index']);
-    Route::get('students/{id}', [StudentController::class, 'show']);
+    Route::resource('students', StudentController::class)->except(['store', 'update', 'destroy']);
     // TEMPLATES
-    Route::get('templates', [TemplateController::class, 'index']);
-    Route::get('templates/{id}', [TemplateController::class, 'show']);
+    Route::resource('templates', TemplateController::class)->except(['store', 'update', 'destroy']);
     // INSCRIPTIONS
-    Route::get('inscriptions', [InscriptionController::class, 'index']);
-    Route::get('inscriptions/{id}', [InscriptionController::class, 'show']);
+    Route::resource('inscriptions', InscriptionController::class)->except(['store', 'update', 'destroy']);
     // COURSES
-    Route::get('courses', [CourseController::class, 'index']);
-    Route::get('courses/{id}', [CourseController::class, 'show']);
+    Route::resource('courses', CourseController::class)->except(['store', 'update', 'destroy']);
     // COMBOS
     Route::post('enroll-register-student-or-not', [ComboController::class, 'enroll_registerStudentOrNot']);
 });

@@ -34,12 +34,12 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $validator = Validator::make($request->all(), [
             "dni" => "required",
             "name" => "required",
             "lastname" => "required",
-            "sex" => "required",
-            "instruction" => "required",
+            "sex" => "required|in:" . implode(",", Student::$_SEXS),
+            "instruction" => "required|in:" . implode(",", Student::$_INSTRUCTIONS),
             "address" => "required",
             "email" => "required",
             "cellphone" => "required",
@@ -49,9 +49,11 @@ class StudentController extends Controller
             "entity_post" => "required",
             "entity_address" => "required",
             "entity_phone" => "required"
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
+        ], [
+            "required" => "El campo :attribute es requerido",
+            "sex.in" => "El campo sex debe ser uno de los siguientes valores: " . implode(",", Student::$_SEXS),
+            "instruction.in" => "El campo instruction debe ser uno de los siguientes valores: " . implode(",", Student::$_INSTRUCTIONS),
+        ]);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
@@ -96,12 +98,12 @@ class StudentController extends Controller
      */
     public function update(Request $request, Student $student)
     {
-        $rules = [
+        $validator = Validator::make($request->all(), [
             "dni" => "required",
             "name" => "required",
             "lastname" => "required",
-            "sex" => "required",
-            "instruction" => "required",
+            "sex" => "required|in:" . implode(",", Student::$_SEXS),
+            "instruction" => "required|in:" . implode(",", Student::$_INSTRUCTIONS),
             "address" => "required",
             "email" => "required",
             "cellphone" => "required",
@@ -111,9 +113,11 @@ class StudentController extends Controller
             "entity_post" => "required",
             "entity_address" => "required",
             "entity_phone" => "required"
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
+        ], [
+            "required" => "El campo :attribute es requerido",
+            "sex.in" => "El campo sex debe ser uno de los siguientes valores: " . implode(",", Student::$_SEXS),
+            "instruction.in" => "El campo instruction debe ser uno de los siguientes valores: " . implode(",", Student::$_INSTRUCTIONS),
+        ]);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,

@@ -116,7 +116,7 @@ class UserController extends Controller
             "dni" => "required|unique:users,dni",
             "email" => "required|email|unique:users,email",
             "password" => "required",
-            "role" => "required|in:" . implode(",", array_keys(User::$ROLES)),
+            "role" => "required|in:" . implode(",", User::$_ROLES),
             "photo" => "required|file|mimes:" . $this->IMAGE_TYPE,
             "signature" => "required|file|mimes:" . $this->IMAGE_TYPE
         ], [
@@ -129,7 +129,7 @@ class UserController extends Controller
             "email.unique" => "El email ya existe",
             "password.required" => "El campo password es requerido",
             "role.required" => "El campo rol es requerido",
-            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", array_keys(User::$ROLES)),
+            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
             "photo.required" => "El campo foto es requerido",
             "photo.file" => "El campo foto debe ser un archivo",
             "signature.required" => "El campo firma es requerido",
@@ -212,7 +212,7 @@ class UserController extends Controller
             "dni" => "required",
             "email" => "required",
             "password" => "required",
-            "role" => "required|in:" . implode(",", array_keys(User::$ROLES)),
+            "role" => "required|in:" . implode(",", User::$_ROLES),
         ];
 
         $validator = Validator::make($request->all(), $rules, [
@@ -222,7 +222,7 @@ class UserController extends Controller
             "email.required" => "El campo email es requerido",
             "password.required" => "El campo password es requerido",
             "role.required" => "El campo rol es requerido",
-            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", array_keys(User::$ROLES)),
+            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -262,7 +262,7 @@ class UserController extends Controller
             'dni' => 'required|unique:users,dni,' . $id,
             'email' => 'required|email|unique:users,email,' . $id,
             "password" => "required",
-            "role" => "required|in:" . implode(",", array_keys(User::$ROLES)),
+            "role" => "required|in:" . implode(",", User::$_ROLES),
         ];
 
         $exists_photo = $request->hasFile("photo");
@@ -281,7 +281,7 @@ class UserController extends Controller
             "email.unique" => "El email ya existe",
             "password.required" => "El campo password es requerido",
             "role.required" => "El campo rol es requerido",
-            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", array_keys(User::$ROLES)),
+            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
             "photo.required" => "El campo foto es requerido",
             "photo.file" => "El campo foto debe ser un archivo",
             "signature.required" => "El campo firma es requerido",

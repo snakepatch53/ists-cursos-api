@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Student;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,8 +19,8 @@ return new class extends Migration
             $table->string("dni", 10)->unique();
             $table->string("name");
             $table->string("lastname");
-            $table->string("sex");
-            $table->string("instruction");
+            $table->enum("sex", Student::$_SEXS);
+            $table->enum("instruction", Student::$_INSTRUCTIONS);
             $table->string("address");
             $table->string("email");
             $table->string("cellphone", 20);

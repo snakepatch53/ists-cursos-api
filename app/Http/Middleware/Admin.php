@@ -16,7 +16,7 @@ class Admin
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user()->role_id != 1)
+        if ($request->user()->role != "Administrador")
             return response()->json([
                 "success" => false,
                 "message" => "Necesitas permisos de Administrador para acceder a este recurso.",
