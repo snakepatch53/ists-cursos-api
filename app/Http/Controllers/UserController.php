@@ -178,14 +178,11 @@ class UserController extends Controller
         if ($request->query('includeCoursesTeacher')) $includes[] = 'courseTeacher';
         if ($request->query('includeCoursesResponsible')) $includes[] = 'courseResponsible';
 
-        $token = $user->createToken('authToken');
-
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
             "errors" => null,
             "data" => $user->load($includes),
-            // "token" => $token
         ]);
     }
 

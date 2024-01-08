@@ -31,24 +31,24 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'v1'], function () {
     Route::middleware(['auth:sanctum', 'admin'])->group(function () {
         // USERS
-        Route::resource('users', UserController::class);
+        Route::resource('users', UserController::class)->except(['index', 'show']);
         Route::post('users/{id}', [UserController::class, 'updateWithImages']);
         // SOCIAL NETWORKS
-        Route::resource('social-networks', SocialNetworkController::class);
+        Route::resource('social-networks', SocialNetworkController::class)->except(['index', 'show']);
         // IMAGES
-        Route::resource('images', ImageController::class);
+        Route::resource('images', ImageController::class)->except(['index', 'show']);
         Route::post('images/{id}', [ImageController::class, 'updateWithImage']);
         // INSTITUTIONS
-        Route::resource('institutions', InstitutionController::class);
+        Route::resource('institutions', InstitutionController::class)->except(['index', 'show']);
         Route::post('institutions/{id}', [InstitutionController::class, 'updateWithLogo']);
         // STUDENTS
-        Route::resource('students', StudentController::class);
+        Route::resource('students', StudentController::class)->except(['index', 'show']);
         // TEMPLATES
-        Route::resource('templates', TemplateController::class);
+        Route::resource('templates', TemplateController::class)->except(['index', 'show']);
         // INSCRIPTIONS
-        Route::resource('inscriptions', InscriptionController::class);
+        Route::resource('inscriptions', InscriptionController::class)->except(['index', 'show']);
         // COURSES
-        Route::resource('courses', CourseController::class);
+        Route::resource('courses', CourseController::class)->except(['index', 'show', 'store']);
     });
 
     Route::middleware(['auth:sanctum', 'responsible'])->group(function () {
