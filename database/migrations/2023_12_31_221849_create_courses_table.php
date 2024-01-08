@@ -22,6 +22,8 @@ return new class extends Migration
             $table->date("date_end");
             $table->integer("quota");
             $table->text("whatsapp");
+            $table->longtext("description");
+            $table->boolean("published")->default(false);
             $table->foreignId('teacher_id')->constrained('users');
             $table->foreignId('responsible_id')->constrained('users');
             $table->foreignId('template_id')->constrained('templates');

@@ -26,6 +26,7 @@ class CourseFactory extends Factory
             "date_end" => $this->faker->date(),
             "quota" => $this->faker->numberBetween(10, 50),
             "whatsapp" => "https://api.whatsapp.com/send?phone=" . $this->faker->phoneNumber() . "&text=Hola,%20bienvenido",
+            "description" => $this->faker->text(200),
             "teacher_id" => User::factory(),
             "responsible_id" => User::factory(),
             "template_id" => Template::factory(),

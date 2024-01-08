@@ -50,6 +50,7 @@ class CourseController extends Controller
             "date_end" => "required",
             "quota" => "required",
             "whatsapp" => "required",
+            "description" => "required",
             'teacher_id' => 'required|exists:users,id',
             'responsible_id' => 'required|exists:users,id',
             'template_id' => 'required|exists:templates,id',
@@ -61,6 +62,7 @@ class CourseController extends Controller
             'date_end.required' => 'La fecha de fin es requerida',
             'quota.required' => 'El numero de cupos es requerido',
             'whatsapp.required' => 'El link de grupo de whatsapp es requerido',
+            'description.required' => 'La descripción es requerida',
             'teacher_id.required' => 'El docente es requerido',
             'responsible_id.required' => 'El responsable es requerido',
             'template_id.required' => 'La plantilla es requerida',
@@ -133,6 +135,7 @@ class CourseController extends Controller
                 "date_end" => "required",
                 "quota" => "required",
                 "whatsapp" => "required",
+                "description" => "required",
                 'teacher_id' => 'required|exists:users,id',
                 'responsible_id' => 'required|exists:users,id',
                 'template_id' => 'required|exists:templates,id',
@@ -144,6 +147,7 @@ class CourseController extends Controller
                 'date_end.required' => 'La fecha de fin es requerida',
                 'quota.required' => 'El numero de cupos es requerido',
                 'whatsapp.required' => 'El link de grupo de whatsapp es requerido',
+                'description.required' => 'La descripción es requerida',
                 'teacher_id.required' => 'El docente es requerido',
                 'responsible_id.required' => 'El responsable es requerido',
                 'template_id.required' => 'La plantilla es requerida',
@@ -183,6 +187,7 @@ class CourseController extends Controller
             "date_end" => "required",
             "quota" => "required",
             "whatsapp" => "required",
+            "description" => "required",
             'teacher_id' => 'required|exists:users,id',
             'responsible_id' => 'required|exists:users,id',
             'template_id' => 'required|exists:templates,id',
@@ -199,6 +204,7 @@ class CourseController extends Controller
             'date_end.required' => 'La fecha de fin es requerida',
             'quota.required' => 'El numero de cupos es requerido',
             'whatsapp.required' => 'El link de grupo de whatsapp es requerido',
+            'description.required' => 'La descripción es requerida',
             'teacher_id.required' => 'El docente es requerido',
             'responsible_id.required' => 'El responsable es requerido',
             'template_id.required' => 'La plantilla es requerida',
@@ -233,6 +239,53 @@ class CourseController extends Controller
             "message" => "Recurso actualizado",
             "errors" => null,
             "data" => $image
+        ]);
+    }
+
+    public function updatePublished(Request $request, $id)
+    {
+        $request->merge(["id" => $id]);
+
+        $validator = Validator::make($request->all(), [
+            'id' => 'exists:courses,id',
+            "published" => "required",
+        ], [
+            'id.exists' => 'El id del curso no existe',
+            'name.required' => 'El nombre es requerido',
+            'duration.required' => 'La duración es requerida',
+            'date_start.required' => 'La fecha de inicio es requerida',
+            'date_end.required' => 'La fecha de fin es requerida',
+            'quota.required' => 'El numero de cupos es requerido',
+            'whatsapp.required' => 'El link de grupo de whatsapp es requerido',
+            'description.required' => 'La descripción es requerida',
+            'teacher_id.required' => 'El docente es requerido',
+            'responsible_id.required' => 'El responsable es requerido',
+            'template_id.required' => 'La plantilla es requerida',
+            'teacher_id.exists' => 'El docente no existe',
+            'responsible_id.exists' => 'El responsable no existe',
+            'template_id.exists' => 'La plantilla no existe',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
+            ]);
+        }
+
+        $course = Course::find($id);
+
+        $course->update([
+            "published" => $request->published
+        ]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "errors" => null,
+            "data" => $course
         ]);
     }
 

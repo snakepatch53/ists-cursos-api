@@ -29,40 +29,66 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 
 Route::group(['prefix' => 'v1'], function () {
+    Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+        // USERS
+        Route::resource('users', UserController::class);
+        Route::post('users/{id}', [UserController::class, 'updateWithImages']);
+        // SOCIAL NETWORKS
+        Route::resource('social-networks', SocialNetworkController::class);
+        // IMAGES
+        Route::resource('images', ImageController::class);
+        Route::post('images/{id}', [ImageController::class, 'updateWithImage']);
+        // INSTITUTIONS
+        Route::resource('institutions', InstitutionController::class);
+        Route::post('institutions/{id}', [InstitutionController::class, 'updateWithLogo']);
+        // STUDENTS
+        Route::resource('students', StudentController::class);
+        // TEMPLATES
+        Route::resource('templates', TemplateController::class);
+        // INSCRIPTIONS
+        Route::resource('inscriptions', InscriptionController::class);
+        // COURSES
+        Route::resource('courses', CourseController::class);
+    });
+
+    Route::middleware(['auth:sanctum', 'responsible'])->group(function () {
+        // COURSES
+        Route::put('courses/{id}', [CourseController::class, 'updatePublished']);
+    });
+
+    Route::middleware(['auth:sanctum'])->group(function () {
+        // USERS
+        Route::post('logout', [UserController::class, 'logout']);
+        // COURSES
+        Route::post('courses', [CourseController::class, 'store']);
+        Route::post('courses/{id}', [CourseController::class, 'updateWithImage']);
+    });
 
     // USERS
     Route::post('login', [UserController::class, 'login']);
-    Route::resource('users', UserController::class);
-
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::post('users/{id}', [UserController::class, 'updateWithImages']);
-        Route::post('logout', [UserController::class, 'logout']);
-    });
-
+    Route::get('users', [UserController::class, 'index']);
+    Route::get('users/{id}', [UserController::class, 'show']);
     // SOCIAL NETWORKS
-    Route::resource('social-networks', SocialNetworkController::class);
-
+    Route::get('social-networks', [SocialNetworkController::class, 'index']);
+    Route::get('social-networks/{id}', [SocialNetworkController::class, 'show']);
     // IMAGES
-    Route::resource('images', ImageController::class);
-    Route::post('images/{id}', [ImageController::class, 'updateWithImage']);
-
+    Route::get('images', [ImageController::class, 'index']);
+    Route::get('images/{id}', [ImageController::class, 'show']);
     // INSTITUTIONS
-    Route::resource('institutions', InstitutionController::class);
-    Route::post('institutions/{id}', [InstitutionController::class, 'updateWithLogo']);
-
+    Route::get('institutions', [InstitutionController::class, 'index']);
+    Route::get('institutions/{id}', [InstitutionController::class, 'show']);
     // STUDENTS
-    Route::resource('students', StudentController::class);
-
+    Route::get('students', [StudentController::class, 'index']);
+    Route::get('students/{id}', [StudentController::class, 'show']);
     // TEMPLATES
-    Route::resource('templates', TemplateController::class);
-
+    Route::get('templates', [TemplateController::class, 'index']);
+    Route::get('templates/{id}', [TemplateController::class, 'show']);
     // INSCRIPTIONS
-    Route::resource('inscriptions', InscriptionController::class);
-
+    Route::get('inscriptions', [InscriptionController::class, 'index']);
+    Route::get('inscriptions/{id}', [InscriptionController::class, 'show']);
     // COURSES
-    Route::resource('courses', CourseController::class);
-    Route::post('courses/{id}', [CourseController::class, 'updateWithImage']);
-
+    Route::get('courses', [CourseController::class, 'index']);
+    Route::get('courses/{id}', [CourseController::class, 'show']);
     // COMBOS
     Route::post('enroll-register-student-or-not', [ComboController::class, 'enroll_registerStudentOrNot']);
 });

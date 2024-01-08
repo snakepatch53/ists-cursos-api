@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('photo');
             $table->string('email')->unique();
             $table->integer('role');
+            // $table->enum("role", ["admin", "responsible", "teacher"]);
             $table->text('description');
             $table->text('facebook'); //fb_url
             $table->timestamp('email_verified_at')->nullable();

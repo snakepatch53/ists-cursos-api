@@ -17,6 +17,8 @@ class Course extends Model
         "date_end",
         "quota",
         "whatsapp",
+        "description",
+        "published",
         "teacher_id",
         "responsible_id",
         "template_id",
