@@ -20,6 +20,7 @@ return new class extends Migration
             $table->text("url");
             $table->longText("icon");
             $table->string("color", 50);
+            $table->string("color2", 50);
             $table->timestamps();
         });
     }

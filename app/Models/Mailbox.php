@@ -5,16 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class SocialNetwork extends Model
+class Mailbox extends Model
 {
     use HasFactory;
-
     protected $fillable = [
         "name",
-        "value",
-        "url",
-        "icon",
-        "color",
-        "color2"
+        "phone",
+        "email",
+        "message"
     ];
 }

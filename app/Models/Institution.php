@@ -11,7 +11,8 @@ class Institution extends Model
     protected $fillable = [
         "name",
         "initials",
-        "logo"
+        "logo",
+        "url"
     ];
 
     protected $appends = ["logo_url"];

@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\SocialNetwork;
+use App\Models\Mailbox;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-class SocialNetworkController extends Controller
+class MailboxController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,11 +15,11 @@ class SocialNetworkController extends Controller
      */
     public function index()
     {
-        $socialNetworks = SocialNetwork::all();
+        $data = Mailbox::all();
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
-            "data" => $socialNetworks
+            "data" => $data
         ]);
     }
 
@@ -33,44 +33,44 @@ class SocialNetworkController extends Controller
     {
         $validator = Validator::make($request->all(), [
             "name" => "required",
-            "value" => "required",
-            "url" => "required",
-            "icon" => "required",
-            "color" => "required",
-            "color2" => "required"
+            "phone" => "required",
+            "email" => "required",
+            "message" => "required"
         ], [
             "required" => "El campo :attribute es requerido"
         ]);
-
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
                 "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
+                "errors" => $validator->errors(),
+                "data" => null
             ]);
         }
 
-        $socialNetwork = SocialNetwork::create($request->all());
+        $data = Mailbox::create($request->all());
 
         return response()->json([
             "success" => true,
             "message" => "Recurso creado",
-            "data" => $socialNetwork
+            "errors" => null,
+            "data" => $data
         ]);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Models\SocialNetwork  $socialNetwork
+     * @param  \App\Models\Mailbox  $mailbox
      * @return \Illuminate\Http\Response
      */
-    public function show(SocialNetwork $socialNetwork)
+    public function show(Mailbox $mailbox)
     {
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
-            "data" => $socialNetwork
+            "errors" => null,
+            "data" => $mailbox
         ]);
     }
 
@@ -78,51 +78,53 @@ class SocialNetworkController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\SocialNetwork  $socialNetwork
+     * @param  \App\Models\Mailbox  $mailbox
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, SocialNetwork $socialNetwork)
+    public function update(Request $request, Mailbox $mailbox)
     {
         $validator = Validator::make($request->all(), [
             "name" => "required",
-            "value" => "required",
-            "url" => "required",
-            "icon" => "required",
-            "color" => "required",
-            "color2" => "required"
+            "phone" => "required",
+            "email" => "required",
+            "message" => "required"
         ], [
             "required" => "El campo :attribute es requerido"
         ]);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
             ]);
         }
 
-        $socialNetwork->update($request->all());
+        $mailbox->update($request->all());
 
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
-            "data" => $socialNetwork
+            "errors" => null,
+            "data" => $mailbox
         ]);
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Models\SocialNetwork  $socialNetwork
+     * @param  \App\Models\Mailbox  $mailbox
      * @return \Illuminate\Http\Response
      */
-    public function destroy(SocialNetwork $socialNetwork)
+    public function destroy(Mailbox $mailbox)
     {
-        $socialNetwork->delete();
+        $mailbox->delete();
+
         return response()->json([
             "success" => true,
             "message" => "Recurso eliminado",
-            "data" => $socialNetwork
+            "errors" => null,
+            "data" => $mailbox
         ]);
     }
 }

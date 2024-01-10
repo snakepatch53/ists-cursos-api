@@ -5,6 +5,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ImageController;
 use App\Http\Controllers\InscriptionController;
 use App\Http\Controllers\InstitutionController;
+use App\Http\Controllers\MailboxController;
 use App\Http\Controllers\SocialNetworkController;
 use App\Http\Controllers\StudentController;
 use App\Http\Controllers\TemplateController;
@@ -54,6 +55,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::middleware(['auth:sanctum', 'responsible'])->group(function () {
         // COURSES
         Route::put('courses/{id}', [CourseController::class, 'updatePublished']);
+        // MAILBOXES
+        Route::resource('mailboxes', MailboxController::class)->except(['store']);
     });
 
     Route::middleware(['auth:sanctum'])->group(function () {
@@ -81,6 +84,9 @@ Route::group(['prefix' => 'v1'], function () {
     Route::resource('inscriptions', InscriptionController::class)->except(['store', 'update', 'destroy']);
     // COURSES
     Route::resource('courses', CourseController::class)->except(['store', 'update', 'destroy']);
+    // MAILBOXES
+    Route::resource('mailboxes', MailboxController::class)->except(['index', 'update', 'destroy']);
     // COMBOS
     Route::post('enroll-register-student-or-not', [ComboController::class, 'enroll_registerStudentOrNot']);
+    Route::post('show-certificates', [ComboController::class, 'showCertificates']);
 });

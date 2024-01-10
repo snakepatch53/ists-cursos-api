@@ -22,6 +22,7 @@ class InstitutionController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recursos encontrados",
+            "errors" => null,
             "data" => $data
         ]);
     }
@@ -34,18 +35,22 @@ class InstitutionController extends Controller
      */
     public function store(Request $request)
     {
-        $rules = [
+        $validator = Validator::make($request->all(), [
             "name" => "required",
             "initials" => "required",
             "logo" => "required|file|mimes:" . $this->LOGO_TYPE,
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
+            "url" => "required"
+        ], [
+            "required" => "El campo :attribute es requerido",
+            "mimes" => "El campo :attribute debe ser un archivo de tipo: " . $this->LOGO_TYPE,
+            "file" => "El campo :attribute debe ser un archivo"
+        ]);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
             ]);
         }
 
@@ -56,6 +61,7 @@ class InstitutionController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso creado",
+            "errors" => null,
             "data" => $data
         ]);
     }
@@ -71,6 +77,7 @@ class InstitutionController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso encontrado",
+            "errors" => null,
             "data" => $institution
         ]);
     }
@@ -84,17 +91,19 @@ class InstitutionController extends Controller
      */
     public function update(Request $request, Institution $institution)
     {
-        $rules = [
+        $validator = Validator::make($request->all(), [
             "name" => "required",
-            "initials" => "required"
-        ];
-
-        $validator = Validator::make($request->all(), $rules);
+            "initials" => "required",
+            "url" => "required"
+        ], [
+            "required" => "El campo :attribute es requerido"
+        ]);
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
             ]);
         }
 
@@ -114,6 +123,7 @@ class InstitutionController extends Controller
             return response()->json([
                 "success" => false,
                 "message" => "Recurso no encontrado",
+                "errors" => ["id" => ["El id no existe"]],
                 "data" => null
             ]);
         }
@@ -121,7 +131,8 @@ class InstitutionController extends Controller
 
         $rules = [
             "name" => "required",
-            "initials" => "required"
+            "initials" => "required",
+            "url" => "required"
         ];
 
         // valida si existe el archivo
@@ -129,12 +140,18 @@ class InstitutionController extends Controller
         if ($exists_logo) $rules["logo"] = "required|file|mimes:" . $this->LOGO_TYPE;
 
         //siempre queda igual
-        $validator = Validator::make($request->all(), $rules);
+        $validator = Validator::make($request->all(), $rules, [
+            "required" => "El campo :attribute es requerido",
+            "mimes" => "El campo :attribute debe ser un archivo de tipo: " . $this->LOGO_TYPE,
+            "file" => "El campo :attribute debe ser un archivo"
+        ]);
+
         if ($validator->fails()) {
             return response()->json([
                 "success" => false,
-                "message" => implode(" - ", $validator->errors()->all()),
-                "data" => $validator->errors()
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
             ]);
         }
 
@@ -151,6 +168,7 @@ class InstitutionController extends Controller
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
+            "errors" => null,
             "data" => $institution
         ]);
     }

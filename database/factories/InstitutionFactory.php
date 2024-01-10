@@ -19,7 +19,8 @@ class InstitutionFactory extends Factory
         return [
             "name" => $this->faker->name(),
             "initials" => $this->faker->randomElement(["UFRN", "IFRN", "UERN"]),
-            "logo" => $this->faker->randomElement(["1.png", "2.png", "3.png", "4.png", "5.png"])
+            "logo" => $this->faker->randomElement(["1.png", "2.png", "3.png", "4.png", "5.png"]),
+            "url" => $this->faker->url()
         ];
     }
 }

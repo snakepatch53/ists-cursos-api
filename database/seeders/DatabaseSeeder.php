@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
             InscriptionSeeder::class,
             StudentSeeder::class,
             TemplateSeeder::class,
+            MailboxSeeder::class,
         ]);
     }
 }
