@@ -235,13 +235,11 @@ class UserController extends Controller
 
         $user->update($request->all());
 
-        $token = $user->createToken('authToken')->plainTextToken;
-
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
             "data" => $user,
-            "token" => $token
+            "token" => null
         ]);
     }
 
@@ -317,14 +315,12 @@ class UserController extends Controller
         if ($request->password) $request->merge(["password" => Hash::make($request->password)]);
         $user->update($request->except($except) + $field_file);
 
-        $token = $user->createToken('authToken')->plainTextToken;
-
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
             "errors" => null,
             "data" => $user,
-            "token" => $token
+            "token" => null
         ]);
     }
 
