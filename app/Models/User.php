@@ -59,11 +59,14 @@ class User extends Authenticatable
 
     public function getPhotoUrlAttribute()
     {
+
+        if ($this->photo == null) return asset("storage/app/public/img/user.png");
         return asset("storage/app/public/img_users/" . $this->photo);
     }
 
     public function getSignatureUrlAttribute()
     {
+        if ($this->signature == null) return asset("storage/app/public/img/signature.png");
         return asset("storage/app/public/img_signature/" . $this->signature);
     }
 

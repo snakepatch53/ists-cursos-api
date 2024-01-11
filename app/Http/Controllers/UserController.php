@@ -117,6 +117,8 @@ class UserController extends Controller
             "email" => "required|email|unique:users,email",
             "password" => "required",
             "role" => "required|in:" . implode(",", User::$_ROLES),
+            "description" => "required",
+            "facebook" => "required",
             "photo" => "required|file|mimes:" . $this->IMAGE_TYPE,
             "signature" => "required|file|mimes:" . $this->IMAGE_TYPE
         ], [
@@ -130,6 +132,8 @@ class UserController extends Controller
             "password.required" => "El campo password es requerido",
             "role.required" => "El campo rol es requerido",
             "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
+            "description.required" => "El campo descripción es requerido",
+            "facebook.required" => "El campo facebook url es requerido",
             "photo.required" => "El campo foto es requerido",
             "photo.file" => "El campo foto debe ser un archivo",
             "signature.required" => "El campo firma es requerido",
@@ -212,7 +216,17 @@ class UserController extends Controller
             "dni" => "required",
             "email" => "required",
             "role" => "required|in:" . implode(",", User::$_ROLES),
+            "description" => "required",
+            "facebook" => "required",
         ];
+
+        $exist_password = $request->password;
+        if ($exist_password) {
+            $rules["password"] = "required";
+            $request->merge(["password" => Hash::make($request->password)]);
+        } else {
+            $request->merge(["password" => $user->password]);
+        }
 
         $validator = Validator::make($request->all(), $rules, [
             "name.required" => "El campo nombre es requerido",
@@ -221,6 +235,8 @@ class UserController extends Controller
             "email.required" => "El campo email es requerido",
             "role.required" => "El campo rol es requerido",
             "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
+            "description.required" => "El campo descripción es requerido",
+            "facebook" => "El campo facebook url es requerido",
         ]);
         if ($validator->fails()) {
             return response()->json([
@@ -230,8 +246,6 @@ class UserController extends Controller
                 "data" => null
             ]);
         }
-
-        if ($request->password) $request->merge(["password" => Hash::make($request->password)]);
 
         $user->update($request->all());
 
@@ -260,6 +274,8 @@ class UserController extends Controller
             'dni' => 'required|unique:users,dni,' . $id,
             'email' => 'required|email|unique:users,email,' . $id,
             "role" => "required|in:" . implode(",", User::$_ROLES),
+            "description" => "required",
+            "facebook" => "required",
         ];
 
         $exists_photo = $request->hasFile("photo");
@@ -267,6 +283,14 @@ class UserController extends Controller
 
         $exists_signature = $request->hasFile("signature");
         if ($exists_signature) $rules["signature"] = "required|file|mimes:" . $this->IMAGE_TYPE;
+
+        $exist_password = $request->password;
+        if ($exist_password) {
+            $rules["password"] = "required";
+            $request->merge(["password" => Hash::make($request->password)]);
+        } else {
+            $request->merge(["password" => $user->password]);
+        }
 
         $validator = Validator::make($request->all(), $rules, [
             "name.required" => "El campo nombre es requerido",
@@ -278,6 +302,8 @@ class UserController extends Controller
             "email.unique" => "El email ya existe",
             "role.required" => "El campo rol es requerido",
             "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
+            "description" => "El campo descripción es requerido",
+            "facebook" => "El campo facebook url es requerido",
             "photo.required" => "El campo foto es requerido",
             "photo.file" => "El campo foto debe ser un archivo",
             "signature.required" => "El campo firma es requerido",
@@ -312,7 +338,7 @@ class UserController extends Controller
             $field_file["signature"] = $fileName;
         }
 
-        if ($request->password) $request->merge(["password" => Hash::make($request->password)]);
+
         $user->update($request->except($except) + $field_file);
 
         return response()->json([

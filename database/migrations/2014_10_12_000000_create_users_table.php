@@ -19,8 +19,8 @@ return new class extends Migration
             $table->string('name');
             $table->string('lastname');
             $table->string('dni', 20);
-            $table->string('signature');
-            $table->string('photo');
+            $table->string('signature')->nullable();
+            $table->string('photo')->nullable();
             $table->string('email')->unique();
             $table->enum("role", User::$_ROLES);
             $table->text('description');
