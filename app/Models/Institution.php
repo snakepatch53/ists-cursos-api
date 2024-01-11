@@ -19,6 +19,6 @@ class Institution extends Model
 
     public function getLogoUrlAttribute()
     {
-        return asset("storage/app/public/img_logos/" . $this->logo);
+        return asset("storage/app/public/img_institutions/" . $this->logo);
     }
 }
