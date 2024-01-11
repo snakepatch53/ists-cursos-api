@@ -59,6 +59,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::resource('mailboxes', MailboxController::class)->except(['store']);
     });
 
+
     Route::middleware(['auth:sanctum'])->group(function () {
         // USERS
         Route::post('logout', [UserController::class, 'logout']);
