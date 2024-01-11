@@ -211,7 +211,6 @@ class UserController extends Controller
             "lastname" => "required",
             "dni" => "required",
             "email" => "required",
-            "password" => "required",
             "role" => "required|in:" . implode(",", User::$_ROLES),
         ];
 
@@ -220,7 +219,6 @@ class UserController extends Controller
             "lastname.required" => "El campo apellido es requerido",
             "dni.required" => "El campo dni es requerido",
             "email.required" => "El campo email es requerido",
-            "password.required" => "El campo password es requerido",
             "role.required" => "El campo rol es requerido",
             "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
         ]);
@@ -261,7 +259,6 @@ class UserController extends Controller
             "lastname" => "required",
             'dni' => 'required|unique:users,dni,' . $id,
             'email' => 'required|email|unique:users,email,' . $id,
-            "password" => "required",
             "role" => "required|in:" . implode(",", User::$_ROLES),
         ];
 
@@ -279,7 +276,6 @@ class UserController extends Controller
             "email.required" => "El campo email es requerido",
             "email.email" => "El campo email no es valido",
             "email.unique" => "El email ya existe",
-            "password.required" => "El campo password es requerido",
             "role.required" => "El campo rol es requerido",
             "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
             "photo.required" => "El campo foto es requerido",
