@@ -30,5 +30,18 @@ class UserSeeder extends Seeder
                 "description" => "I'm a maximus administrator",
                 "facebook" => "https://www.facebook.com/ISTSucua"
             ]);
+
+        DB::table('users')
+            ->insert([
+                "name" => "Edwin",
+                "lastname" => "Jara",
+                "dni" => "edwin",
+                "password" => '$2y$10$v18L2DEt0jQnz8J4hWDDKOG0xJrHWGZSkbxWSHBIG8Nynhn/RuY4S',
+                "email" => "edwin@jara.com",
+                "role" => "Administrador",
+                "description" => "I can do everything",
+                "facebook" => "https://www.facebook.com/formapro.ecocompu",
+                "photo" => "6.png"
+            ]);
     }
 }
