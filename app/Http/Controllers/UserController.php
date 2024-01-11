@@ -150,7 +150,7 @@ class UserController extends Controller
         $fileName_photo = basename($request->file("photo")->store($this->PHOTO_PATH));
         $fileName_signature = basename($request->file("signature")->store($this->SIGNATURE_PATH));
 
-        $request->merge(["password" => Hash::make($request->password)]);
+        if ($request->password) $request->merge(["password" => Hash::make($request->password)]);
         $data = User::create($request->except(["photo", "signature"]) + ["photo" => $fileName_photo, "signature" => $fileName_signature]);
 
         $token = $data->createToken('authToken')->plainTextToken;
@@ -230,6 +230,8 @@ class UserController extends Controller
                 "data" => null
             ]);
         }
+
+        if ($request->password) $request->merge(["password" => Hash::make($request->password)]);
 
         $user->update($request->all());
 
@@ -312,6 +314,7 @@ class UserController extends Controller
             $field_file["signature"] = $fileName;
         }
 
+        if ($request->password) $request->merge(["password" => Hash::make($request->password)]);
         $user->update($request->except($except) + $field_file);
 
         $token = $user->createToken('authToken')->plainTextToken;
