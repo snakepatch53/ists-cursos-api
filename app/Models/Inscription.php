@@ -16,6 +16,16 @@ class Inscription extends Model
         "course_id"
     ];
 
+    protected $appends = [
+        "certificate_url"
+    ];
+
+    public function getCertificateUrlAttribute()
+    {
+        // route web (no api) to get certificate/{id}
+        return route("certificate", ["id" => $this->id]);
+    }
+
     public function student()
     {
         return $this->belongsTo(Student::class);

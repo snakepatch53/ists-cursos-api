@@ -14,4 +14,4 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/certificate/{id}', InscriptionController::class . '@certificate');
+Route::get('/certificate/{id}', InscriptionController::class . '@certificate')->name('certificate');
