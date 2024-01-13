@@ -17,7 +17,6 @@ class UserController extends Controller
     private $SIGNATURE_PATH = "public/img_signature";
     private $IMAGE_TYPE = "jpg,jpeg,png";
 
-
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -51,6 +50,7 @@ class UserController extends Controller
         $user = User::where('email', $request->username)->orWhere('dni', $request->username)->first();
 
         $token = $user->createToken('authToken')->plainTextToken;
+        $user->token = $token;
 
         return response()->json([
             "success" => true,
@@ -347,6 +347,107 @@ class UserController extends Controller
             "errors" => null,
             "data" => $user,
             "token" => null
+        ]);
+    }
+
+    public function updateUserSession(Request $request)
+    {
+        $user_id = Auth::user()->id;
+        $user = User::find($user_id);
+        if (!$user) {
+            return response()->json([
+                "success" => false,
+                "message" => "Recurso no encontrado",
+                "errors" => [
+                    "user" => "El usuario no existe"
+                ],
+                "data" => null
+            ]);
+        }
+
+        $rules = [
+            "name" => "required",
+            "lastname" => "required",
+            'dni' => 'required|unique:users,dni,' . $user_id,
+            'email' => 'required|email|unique:users,email,' . $user_id,
+            "role" => "required|in:" . implode(",", User::$_ROLES),
+            "description" => "required",
+            "facebook" => "required",
+        ];
+
+        $exists_photo = $request->hasFile("photo");
+        if ($exists_photo) $rules["photo"] = "required|file|mimes:" . $this->IMAGE_TYPE;
+
+        $exists_signature = $request->hasFile("signature");
+        if ($exists_signature) $rules["signature"] = "required|file|mimes:" . $this->IMAGE_TYPE;
+
+        $exist_password = $request->password;
+        if ($exist_password) {
+            $rules["password"] = "required";
+            $request->merge(["password" => Hash::make($request->password)]);
+        } else {
+            $request->merge(["password" => $user->password]);
+        }
+
+        $validator = Validator::make($request->all(), $rules, [
+            "name.required" => "El campo nombre es requerido",
+            "lastname.required" => "El campo apellido es requerido",
+            "dni.required" => "El campo dni es requerido",
+            "dni.unique" => "El dni ya existe",
+            "email.required" => "El campo email es requerido",
+            "email.email" => "El campo email no es valido",
+            "email.unique" => "El email ya existe",
+            "role.required" => "El campo rol es requerido",
+            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
+            "description" => "El campo descripción es requerido",
+            "facebook" => "El campo facebook url es requerido",
+            "photo.required" => "El campo foto es requerido",
+            "photo.file" => "El campo foto debe ser un archivo",
+            "signature.required" => "El campo firma es requerido",
+            "signature.file" => "El campo firma debe ser un archivo",
+            "photo.mimes" => "El campo foto debe ser un archivo de tipo: " . $this->IMAGE_TYPE,
+            "signature.mimes" => "El campo firma debe ser un archivo de tipo: " . $this->IMAGE_TYPE
+        ]);
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
+            ]);
+        }
+
+        $except = [];
+        $field_file = [];
+
+        // eliminamos el archivo anterior
+        if ($exists_photo) {
+            if (Storage::exists($this->PHOTO_PATH . "/" . $user->photo)) Storage::delete($this->PHOTO_PATH . "/" . $user->photo);
+            $fileName = basename($request->file("photo")->store($this->PHOTO_PATH));
+            $except[] = "photo";
+            $field_file["photo"] = $fileName;
+        }
+
+        if ($exists_signature) {
+            if (Storage::exists($this->SIGNATURE_PATH . "/" . $user->signature)) Storage::delete($this->SIGNATURE_PATH . "/" . $user->signature);
+            $fileName = basename($request->file("signature")->store($this->SIGNATURE_PATH));
+            $except[] = "signature";
+            $field_file["signature"] = $fileName;
+        }
+
+
+        $user->update($request->except($except) + $field_file);
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        $user->token = $token;
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "errors" => null,
+            "data" => $user,
+            "token" => $token
         ]);
     }
 
