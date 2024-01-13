@@ -5,11 +5,50 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Inscription;
 use App\Models\Student;
+use Barryvdh\DomPDF\Facade\Pdf;
+// use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 
 class InscriptionController extends Controller
 {
+
+    // WEB ROUTE
+    public function certificate(Request $request, $id)
+    {
+        $inscription = Inscription::find($id)->load("student", "course");
+        if (!$inscription) return abort(404);
+
+        $student = $inscription->student;
+        $course = $inscription->course;
+
+        function replaceVariables($content, $data, $parentKey = null)
+        {
+            foreach ($data as $key => $value) {
+                $currentKey = $parentKey ? "{$parentKey}.{$key}" : $key;
+
+                if (is_array($value)) {
+                    $content = replaceVariables($content, $value, $currentKey);
+                } else {
+                    $variable = "{{" . $currentKey . "}}";
+                    $content = str_replace($variable, $value, $content);
+                }
+            }
+
+            return $content;
+        }
+        $code = replaceVariables($inscription->certificate_code, $inscription->toArray());
+        $data = [
+            'student' => $student,
+            'course' => $course,
+            'inscription' => $inscription,
+            'code' => $code
+        ];
+        return Pdf::loadView('certificate', $data)
+            ->setPaper('a4', 'landscape')
+            ->stream('archivo.pdf');
+    }
     /**
      * Display a listing of the resource.
      *

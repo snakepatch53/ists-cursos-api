@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
@@ -24,11 +25,21 @@ class Course extends Model
         "template_id",
     ];
 
-    protected $appends = ["image_url"];
+    protected $appends = ["image_url", "date_start_str", "date_end_str"];
 
     public function getImageUrlAttribute()
     {
         return asset("storage/app/public/img_courses/" . $this->image);
+    }
+
+    public function getDateStartStrAttribute()
+    {
+        return Carbon::parse($this->date_start)->locale('es_ES')->isoFormat('dddd, D [de] MMMM [del] YYYY');
+    }
+
+    public function getDateEndStrAttribute()
+    {
+        return Carbon::parse($this->date_end)->locale('es_ES')->isoFormat('dddd, D [de] MMMM [del] YYYY');
     }
 
     public function teacher()
