@@ -17,8 +17,9 @@ class InscriptionController extends Controller
     // WEB ROUTE
     public function certificate(Request $request, $id)
     {
-        $inscription = Inscription::find($id)->load("student", "course");
+        $inscription = Inscription::find($id);
         if (!$inscription) return abort(404);
+        $inscription->load("student", "course");
 
         $student = $inscription->student;
         $course = $inscription->course;
@@ -38,7 +39,10 @@ class InscriptionController extends Controller
 
             return $content;
         }
-        $code = replaceVariables($inscription->certificate_code, $inscription->toArray());
+        // inlude tempalte for template_id
+        $code = $course->template->code;
+        // var_dump($code);
+        $code = replaceVariables($code, $inscription->toArray());
         $data = [
             'student' => $student,
             'course' => $course,
