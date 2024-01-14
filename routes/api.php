@@ -66,7 +66,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('courses', [CourseController::class, 'store']);
         Route::post('courses/{id}', [CourseController::class, 'updateWithImage']);
         // INSCRIPTIONS
-        Route::put('inscriptions/update-state-and-certificate-code', [ComboController::class, 'updateStateAndCertificateCode']);
+        Route::put('inscriptions/update-state-and-certificate-code/{id}', [ComboController::class, 'updateStateAndCertificateCode']);
     });
 
     // USERS
