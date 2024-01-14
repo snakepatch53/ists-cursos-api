@@ -211,6 +211,42 @@ class InscriptionController extends Controller
         ]);
     }
 
+    public function updateState(Request $request, $id)
+    {
+        $inscription = Inscription::find($id);
+        if (!$inscription) return response()->json([
+            "success" => false,
+            "message" => "Recurso no encontrado",
+            "errors" => ["id" => ["El recurso no existe"]],
+            "data" => null
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            "state" => "required|in:" . implode(",", Inscription::$_STATES)
+        ], [
+            "state.required" => "El estado es requerido",
+            "state.in" => "El estado debe ser uno de los siguientes: " . implode(",", Inscription::$_STATES)
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
+            ]);
+        }
+
+        $inscription->update(["state" => $request->state]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "errors" => null,
+            "data" => $inscription
+        ]);
+    }
+
     /**
      * Remove the specified resource from storage.
      *

@@ -29,7 +29,6 @@ class ComboController extends Controller
             "student.entity_post" => "required",
             "student.entity_address" => "required",
             "student.entity_phone" => "required"
-
         ], [
             'course_id.required' => 'El curso es requerido',
             'course_id.exists' => 'El curso no existe',
@@ -89,7 +88,7 @@ class ComboController extends Controller
             "certificate_code" => "",
             "student_id" => $student->id,
             "course_id" => $request->course_id,
-            "approval" => false
+            "state" => "Inscrito"
         ]);
 
         return response()->json([
