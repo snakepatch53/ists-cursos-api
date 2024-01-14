@@ -132,4 +132,45 @@ class ComboController extends Controller
             "data" => $inscriptions ? $inscriptions : []
         ]);
     }
+
+    public function updateStateAndCertificateCode(Request $request, $id)
+    {
+        $inscription = Inscription::find($id);
+        if (!$inscription) return response()->json([
+            "success" => false,
+            "message" => "Recurso no encontrado",
+            "errors" => ["id" => ["El recurso no existe"]],
+            "data" => null
+        ]);
+
+        $validator = Validator::make($request->all(), [
+            "state" => "required|in:" . implode(",", Inscription::$_STATES),
+            "certificate_code" => "required"
+        ], [
+            "state.required" => "El estado es requerido",
+            "state.in" => "El estado debe ser uno de los siguientes: " . implode(",", Inscription::$_STATES),
+            "certificate_code.required" => "El código del certificado es requerido"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                "success" => false,
+                "message" => $validator->errors()->first(),
+                "errors" => $validator->errors(),
+                "data" => null
+            ]);
+        }
+
+        $inscription->update([
+            "state" => $request->state,
+            "certificate_code" => $request->certificate_code
+        ]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "Recurso actualizado",
+            "errors" => null,
+            "data" => $inscription
+        ]);
+    }
 }

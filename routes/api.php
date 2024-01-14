@@ -24,9 +24,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
 
 Route::group(['prefix' => 'v1'], function () {
@@ -65,6 +65,8 @@ Route::group(['prefix' => 'v1'], function () {
         // COURSES
         Route::post('courses', [CourseController::class, 'store']);
         Route::post('courses/{id}', [CourseController::class, 'updateWithImage']);
+        // INSCRIPTIONS
+        Route::put('inscriptions/update-state-and-certificate-code', [ComboController::class, 'updateStateAndCertificateCode']);
     });
 
     // USERS
@@ -87,6 +89,6 @@ Route::group(['prefix' => 'v1'], function () {
     // MAILBOXES
     Route::resource('mailboxes', MailboxController::class)->except(['index', 'update', 'destroy']);
     // COMBOS
-    Route::post('enroll-register-student-or-not', [ComboController::class, 'enroll_registerStudentOrNot']);
-    Route::post('show-certificates', [ComboController::class, 'showCertificates']);
+    Route::post('inscriptions/enroll-register-student-or-not', [ComboController::class, 'enroll_registerStudentOrNot']);
+    Route::post('inscriptions/show-certificates', [ComboController::class, 'showCertificates']);
 });
