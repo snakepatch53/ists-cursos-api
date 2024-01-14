@@ -161,10 +161,10 @@ class ComboController extends Controller
             ]);
         }
 
-        $inscription->state = $request->state;
-        $inscription->certificate_code = $request->certificate_code;
-
-        $inscription->update($inscription->toArray());
+        $inscription->update([
+            "state" => $request->state,
+            "certificate_code" => $request->certificate_code
+        ]);
 
         return response()->json([
             "success" => true,
