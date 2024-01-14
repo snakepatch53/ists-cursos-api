@@ -19,6 +19,7 @@ class InscriptionController extends Controller
     {
         $inscription = Inscription::find($id);
         if (!$inscription) return abort(404);
+        if (!$inscription->state != "Aprobado") return abort(404);
         $inscription->load("student", "course");
 
         $student = $inscription->student;

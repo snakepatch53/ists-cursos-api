@@ -9,8 +9,16 @@ class Inscription extends Model
 {
     use HasFactory;
 
+    public static $_STATES = [
+        "Inscrito",
+        "Aprobado",
+        "Reprobado",
+        "Baneado"
+    ];
+
+
     protected $fillable = [
-        "approval",
+        "state",
         "certificate_code",
         "student_id",
         "course_id"
