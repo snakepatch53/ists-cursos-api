@@ -25,7 +25,13 @@ class Course extends Model
         "template_id",
     ];
 
-    protected $appends = ["image_url", "date_start_str", "date_end_str"];
+    protected $appends = [
+        "image_url",
+        "date_start_str",
+        "date_end_str",
+        "course_started",
+        "course_finished"
+    ];
 
     public function getImageUrlAttribute()
     {
@@ -40,6 +46,16 @@ class Course extends Model
     public function getDateEndStrAttribute()
     {
         return Carbon::parse($this->date_end)->locale('es_ES')->isoFormat('dddd, D [de] MMMM [del] YYYY');
+    }
+
+    public function getCourseStartedAttribute()
+    {
+        return Carbon::parse($this->date_start)->isPast();
+    }
+
+    public function getCourseFinishedAttribute()
+    {
+        return Carbon::parse($this->date_end)->isPast();
     }
 
     public function teacher()
