@@ -83,6 +83,22 @@ class ComboController extends Controller
             "data" => null
         ]);
 
+        // validamos que el curso no haya iniciado
+        if ($course->course_started) return response()->json([
+            "success" => false,
+            "message" => "El curso ya ha iniciado",
+            "errors" => ["course_id" => ["El curso ya ha iniciado"]],
+            "data" => null
+        ]);
+
+        // validamos que el curso este publicado
+        if (!$course->published) return response()->json([
+            "success" => false,
+            "message" => "El curso no esta publicado",
+            "errors" => ["course_id" => ["El curso no esta publicado"]],
+            "data" => null
+        ]);
+
         // una vez validado el estudiante y que no este inscrito en el curso, lo inscribimos
         $inscription = Inscription::create([
             "certificate_code" => "",
