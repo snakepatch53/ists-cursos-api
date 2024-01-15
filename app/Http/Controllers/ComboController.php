@@ -143,10 +143,12 @@ class ComboController extends Controller
             "data" => null
         ]);
 
-        $validator = Validator::make($request->all(), [
-            "state" => "required|in:" . implode(",", Inscription::$_STATES),
-            "certificate_code" => "required"
-        ], [
+        $rules = ["state" => "required|in:" . implode(",", Inscription::$_STATES)];
+
+        // if exist certificate_code then validate
+        if ($request->certificate_code) $rules["certificate_code"] = "required";
+
+        $validator = Validator::make($request->all(), $rules, [
             "state.required" => "El estado es requerido",
             "state.in" => "El estado debe ser uno de los siguientes: " . implode(",", Inscription::$_STATES),
             "certificate_code.required" => "El código del certificado es requerido"
