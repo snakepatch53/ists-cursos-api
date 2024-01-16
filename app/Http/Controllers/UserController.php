@@ -370,7 +370,6 @@ class UserController extends Controller
             "lastname" => "required",
             'dni' => 'required|unique:users,dni,' . $user_id,
             'email' => 'required|email|unique:users,email,' . $user_id,
-            "role" => "required|in:" . implode(",", User::$_ROLES),
             "description" => "required",
             "facebook" => "required",
         ];
@@ -397,8 +396,6 @@ class UserController extends Controller
             "email.required" => "El campo email es requerido",
             "email.email" => "El campo email no es valido",
             "email.unique" => "El email ya existe",
-            "role.required" => "El campo rol es requerido",
-            "role.in" => "El campo rol debe ser uno de los siguientes valores: " . implode(", ", User::$_ROLES),
             "description" => "El campo descripción es requerido",
             "facebook" => "El campo facebook url es requerido",
             "photo.required" => "El campo foto es requerido",
@@ -435,6 +432,7 @@ class UserController extends Controller
             $field_file["signature"] = $fileName;
         }
 
+        $request->merge(["role" => $user->role]);
 
         $user->update($request->except($except) + $field_file);
 
