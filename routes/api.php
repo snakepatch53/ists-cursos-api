@@ -92,4 +92,5 @@ Route::group(['prefix' => 'v1'], function () {
     // COMBOS
     Route::post('inscriptions/enroll-register-student-or-not', [ComboController::class, 'enroll_registerStudentOrNot']);
     Route::post('inscriptions/show-certificates', [ComboController::class, 'showCertificates']);
+    Route::post('students/show-student', [ComboController::class, 'showStudent']);
 });

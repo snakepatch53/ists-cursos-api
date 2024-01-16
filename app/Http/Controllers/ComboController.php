@@ -153,6 +153,38 @@ class ComboController extends Controller
         ]);
     }
 
+    public function showStudent(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "dni" => "required"
+        ], [
+            "dni.required" => "El DNI es requerido"
+        ]);
+
+        if ($validator->fails()) return response()->json([
+            "success" => false,
+            "message" => $validator->errors()->first(),
+            "errors" => $validator->errors(),
+            "data" => null
+        ]);
+
+        // get for dni or email
+        $student = Student::where("dni", $request->dni)->first();
+        if (!$student) return response()->json([
+            "success" => false,
+            "message" => "El estudiante no existe",
+            "errors" => ["username" => ["El estudiante no existe"]],
+            "data" => null
+        ]);
+
+        return response()->json([
+            "success" => true,
+            "message" => "Inscripciones del estudiante",
+            "errors" => null,
+            "data" => $student ? $student : []
+        ]);
+    }
+
     public function updateStateAndCertificateCode(Request $request, $id)
     {
         $inscription = Inscription::find($id);
