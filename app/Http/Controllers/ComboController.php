@@ -140,7 +140,11 @@ class ComboController extends Controller
         ]);
 
         // get inscriptions
-        $inscriptions = Inscription::where("student_id", $student->id)->get();
+        $includes = [];
+        if ($request->query('includeStudent')) $includes[] = 'student';
+        if ($request->query('includeCourse')) $includes[] = 'course';
+        $inscriptions = Inscription::with($includes)->where("student_id", $student->id)->get();
+
         return response()->json([
             "success" => true,
             "message" => "Inscripciones del estudiante",
