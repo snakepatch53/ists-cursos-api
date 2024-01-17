@@ -239,7 +239,6 @@ class CourseController extends Controller
         if ($request->query('includeTemplate')) $includes[] = 'template';
         if ($request->query('includeInscriptions')) $includes[] = 'inscriptions';
 
-
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
