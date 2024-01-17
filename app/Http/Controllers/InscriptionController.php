@@ -26,11 +26,11 @@ class InscriptionController extends Controller
         $student = $inscription->student;
         $course = $inscription->course;
 
-        $teacher = User::where("id", $course->teacher_id)->first();
-        $course->teacher = $teacher;
+        // $teacher = User::where("id", $course->teacher_id)->first();
+        // $course->teacher = $teacher;
 
-        $responsible = User::where("id", $course->responsible_id)->first();
-        $course->responsible = $responsible;
+        // $responsible = User::where("id", $course->responsible_id)->first();
+        // $course->responsible = $responsible;
 
         function replaceVariables($content, $data, $parentKey = null)
         {
@@ -62,6 +62,7 @@ class InscriptionController extends Controller
             'inscription' => $inscription,
             'code' => $code
         ];
+        return $data;
         return Pdf::loadView('certificate', $data)
             ->setPaper('a4', 'landscape')
             ->stream('archivo.pdf');
