@@ -62,6 +62,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::middleware(['auth:sanctum'])->group(function () {
         // USERS
         Route::post('logout', [UserController::class, 'logout']);
+        Route::post('is-logged', [UserController::class, 'isLogged']);
         Route::post('update-user-session', [UserController::class, 'updateUserSession']);
         // COURSES
         Route::post('courses', [CourseController::class, 'store']);

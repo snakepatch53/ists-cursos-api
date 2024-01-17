@@ -73,6 +73,32 @@ class UserController extends Controller
         ]);
     }
 
+    public function isLogged(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json([
+                "success" => false,
+                "message" => "No hay sesión iniciada",
+                "errors" => [
+                    "user" => "No hay sesión iniciada"
+                ],
+                "data" => null
+            ]);
+        }
+
+        $user = User::find($user->id);
+        $token = $user->createToken('authToken')->plainTextToken;
+        $user->token = $token;
+
+        return response()->json([
+            "success" => true,
+            "message" => "Sesión iniciada",
+            "errors" => null,
+            "data" => $user
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *
