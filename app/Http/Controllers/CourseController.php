@@ -88,10 +88,16 @@ class CourseController extends Controller
 
         $data = Course::create($request->except("image") + ["image" => $fileName]);
 
+        $includes = [];
+        if ($request->query('includeTeacher')) $includes[] = 'teacher';
+        if ($request->query('includeResponsible')) $includes[] = 'responsible';
+        if ($request->query('includeTemplate')) $includes[] = 'template';
+        if ($request->query('includeInscriptions')) $includes[] = 'inscriptions';
+
         return response()->json([
             "success" => true,
             "message" => "Recurso creado",
-            "data" => $data
+            "data" => $data->load($includes)
         ]);
     }
 
@@ -286,11 +292,17 @@ class CourseController extends Controller
             "published" => $request->published
         ]);
 
+        $includes = [];
+        if ($request->query('includeTeacher')) $includes[] = 'teacher';
+        if ($request->query('includeResponsible')) $includes[] = 'responsible';
+        if ($request->query('includeTemplate')) $includes[] = 'template';
+        if ($request->query('includeInscriptions')) $includes[] = 'inscriptions';
+
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
             "errors" => null,
-            "data" => $course
+            "data" => $course->load($includes)
         ]);
     }
 
