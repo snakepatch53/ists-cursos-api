@@ -44,6 +44,8 @@ class InscriptionController extends Controller
         $code = $course->template->code;
         // var_dump($code);
         $code = replaceVariables($code, $inscription->toArray());
+        // add other variables
+        $code = str_replace("{{logo}}", url("public/img/logo.png"), $code);
         $data = [
             'student' => $student,
             'course' => $course,
@@ -54,6 +56,10 @@ class InscriptionController extends Controller
             ->setPaper('a4', 'landscape')
             ->stream('archivo.pdf');
     }
+
+
+
+
     /**
      * Display a listing of the resource.
      *
