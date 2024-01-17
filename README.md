@@ -23,7 +23,8 @@
     El lenguaje de programacion principal es <b>PHP</b> y el gestor de base de datos es <b>MYSQL</b>
     <br>
     El framework de desarrollo es <b>LARAVEL</b> y el ORM es <b>ELOQUENT</b>
-    <br><br>
+    <br>
+    Tambien es importante recalcar que se trabajo con la arquitectura <b>MVC</b> y se utilizo el patron de diseño <b>REPOSITORY</b>
 </p>
 
 ## 📋 REQUISITOS
