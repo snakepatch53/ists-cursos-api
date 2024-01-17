@@ -36,7 +36,7 @@
 ## 📝 LICENCIA
 
 <p>
-    Este proyecto tiene derechos reservados para `Instituto Superior Tecnológico Sucua` y `Ideasoft` y no puede ser utilizado por terceros sin previa autorización.
+    Este proyecto tiene derechos reservados para <b>Instituto Superior Tecnológico Sucua</b> y <b>Ideasoft</b> y no puede ser utilizado por terceros sin previa autorización.
     <br>
     Tenemos una clausula que te permitira usar nuestro proyecto en caso de ser por fines educativos, pero no podras usarlo para fines comerciales.
     <br>
