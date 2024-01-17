@@ -35,9 +35,11 @@
 ## 📝 LICENCIA
 
 <p>
-    Este proyecto es de código abierto, ¡lo que significa que es completamente libre! 🙌 Puedes usarlo, copiarlo, modificarlo y distribuirlo como desees para tus propios proyectos sin ningún tipo de restricciones. 🚀
+    Este proyecto tiene derechos reservados para `Instituto Superior Tecnológico Sucua` y `Ideasoft` y no puede ser utilizado por terceros sin previa autorización.
     <br>
-    Nos encanta la idea de que más personas puedan utilizar y mejorar nuestro código. 🤓
+    Tenemos una clausula que te permitira usar nuestro proyecto en caso de ser por fines educativos, pero no podras usarlo para fines comerciales.
+    <br>
+    En caso de querer hecharle un vistazo al codigo, para inspirarte o aprender, puedes hacerlo sin problemas, pero no podras usarlo para fines comerciales.
     <br>
     ¡Gracias por visitarnos y disfruta del código! 😎
     <br>
