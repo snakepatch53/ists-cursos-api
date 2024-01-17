@@ -24,11 +24,13 @@ class InscriptionController extends Controller
         $inscription->load("student", "course");
 
         $course = $inscription->course;
-        $course->load("teacher", "responsible");
 
-        $inscription->teacher = $course->teacher;
-        $inscription->responsible = $course->responsible;
 
+        $teacher = User::find($course->teacher_id);
+        $responsible = User::find($course->responsible_id);
+
+        $inscription->teacher = $teacher->toArray();
+        $inscription->responsible = $responsible->toArray();
         function replaceVariables($content, $data, $parentKey = null)
         {
             foreach ($data as $key => $value) {
@@ -46,7 +48,6 @@ class InscriptionController extends Controller
         }
         // inlude tempalte for template_id
         $code = $course->template->code;
-        // var_dump($code);
         $code = replaceVariables($code, $inscription->toArray());
         // add other variables
         $code = str_replace("{{logo}}", url("public/img/logo.png"), $code);
