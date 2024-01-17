@@ -57,7 +57,7 @@ class InscriptionController extends Controller
             'inscription' => $inscription,
             'code' => $code
         ];
-        // return $inscription;
+        return $inscription;
         return Pdf::loadView('certificate', $data)
             ->setPaper('a4', 'landscape')
             ->stream('archivo.pdf');
