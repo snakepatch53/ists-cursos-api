@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Course;
 use App\Models\Inscription;
 use App\Models\Student;
+use App\Models\User;
 use Barryvdh\DomPDF\Facade\Pdf;
 // use Barryvdh\DomPDF\PDF;
 use Illuminate\Http\Request;
@@ -24,6 +25,12 @@ class InscriptionController extends Controller
 
         $student = $inscription->student;
         $course = $inscription->course;
+
+        $teacher = User::where("id", $course->teacher_id)->first();
+        $course->teacher = $teacher;
+
+        $responsible = User::where("id", $course->responsible_id)->first();
+        $course->responsible = $responsible;
 
         function replaceVariables($content, $data, $parentKey = null)
         {
@@ -46,6 +53,9 @@ class InscriptionController extends Controller
         $code = replaceVariables($code, $inscription->toArray());
         // add other variables
         $code = str_replace("{{logo}}", url("public/img/logo.png"), $code);
+        $code = str_replace("{{logo2}}", url("public/img/logo2.png"), $code);
+        $code = str_replace("{{logo3}}", url("public/img/logo3.png"), $code);
+        $code = str_replace("{{logo4}}", url("public/img/logo4.png"), $code);
         $data = [
             'student' => $student,
             'course' => $course,
