@@ -95,3 +95,9 @@ Route::group(['prefix' => 'v1'], function () {
     Route::post('inscriptions/show-certificates', [ComboController::class, 'showCertificates']);
     Route::post('students/show-student', [ComboController::class, 'showStudent']);
 });
+
+
+// Not Found
+Route::fallback(function () {
+    return response()->json(['Not Found!'], 404);
+});

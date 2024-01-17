@@ -16,7 +16,7 @@ class Responsible
      */
     public function handle(Request $request, Closure $next)
     {
-        if ($request->user()->role != "Administrador" && $request->user()->role_id != "Responsable")
+        if ($request->user()->role == "Profesor")
             return response()->json([
                 "success" => false,
                 "message" => "Neceistas permisos de Administrador o Responsable para acceder a este recurso.",
