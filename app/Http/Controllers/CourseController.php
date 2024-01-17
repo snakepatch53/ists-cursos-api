@@ -233,12 +233,18 @@ class CourseController extends Controller
             $image->update($request->all());
         }
 
+        $includes = [];
+        if ($request->query('includeTeacher')) $includes[] = 'teacher';
+        if ($request->query('includeResponsible')) $includes[] = 'responsible';
+        if ($request->query('includeTemplate')) $includes[] = 'template';
+        if ($request->query('includeInscriptions')) $includes[] = 'inscriptions';
+
 
         return response()->json([
             "success" => true,
             "message" => "Recurso actualizado",
             "errors" => null,
-            "data" => $image
+            "data" => $image->load($includes)
         ]);
     }
 
