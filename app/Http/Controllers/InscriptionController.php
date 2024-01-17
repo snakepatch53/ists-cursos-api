@@ -23,7 +23,6 @@ class InscriptionController extends Controller
         if ($inscription->state != "Aprobado") return abort(404);
         $inscription->load("student", "course");
 
-        $student = $inscription->student;
         $course = $inscription->course;
 
         $teacher = User::where("id", $course->teacher_id)->first();
