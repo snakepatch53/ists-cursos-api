@@ -259,23 +259,14 @@ class ComboController extends Controller
                 1
             ]);
         }
-
-
-        // use League\Csv\Writer;
-        // use Illuminate\Support\Facades\Response;
-
-
-
-        // Agregar datos al archivo CSV
-
         // Configurar la respuesta HTTP
         $headers = array(
-            'Content-Type' => 'text/csv',
+            'Content-Type' => 'text/csv; charset=UTF-8',
             'Content-Disposition' => 'attachment; filename="inscriptions_for_moodle.csv"',
         );
 
         // Crear la respuesta con el contenido del archivo CSV y los encabezados
-        $response = Response::make($csvWriter->output(null, "\n", ''), 200, $headers);
+        $response = Response::make($csvWriter->output(), 200, $headers);
 
         return $response;
     }
