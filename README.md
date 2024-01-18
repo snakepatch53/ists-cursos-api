@@ -97,3 +97,15 @@ Posteriormente puedes deshabilitar el servicio de REMOTE MYSQL para que no se co
 ## CONFIGURACION DE VERSION DE PHP
 
 En caso de que tu _CPANEL_ o tu entorno _LOCAL_ no tenga la version de _PHP_ minimamente _8.0_ debes asegurarte de instalarla y activarla.
+
+## TAMAÑO MAXIMO DE MEMORIA PERMITIDO
+
+En caso de que tu _CPANEL_ o tu entorno _LOCAL_ no tenga el tamaño de memoria permitido para la ejecucion de _PHP_ debes asegurarte de aumentarlo.
+Puedes hacerlo desde el archivo _php.ini_ o desde el archivo _.htaccess_
+
+```htaccess
+  php_value memory_limit 512M
+```
+
+O en la configuracion de _PHP_ en _CPANEL_ la opcion de configuración MultiPHP INI Editor, en la seccion de _memory_limit_.
+Deberas aumentar la maxima memoria permitida para la ejecucion de _PHP_ que es _512M_
