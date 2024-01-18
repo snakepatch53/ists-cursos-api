@@ -29,6 +29,16 @@ class Student extends Model
     public static $_INSTRUCTIONS = ["Primaria", "Secundaria", "Técnico", "Superior"];
     public static $_SEXS = ["Masculino", "Femenino", "Otro"];
 
+    public function setNameAttribute($value)
+    {
+        $this->attributes['name'] = ucwords(strtolower($value));
+    }
+
+    public function setLastnameAttribute($value)
+    {
+        $this->attributes['lastname'] = ucwords(strtolower($value));
+    }
+
     public function inscriptions()
     {
         return $this->hasMany(Inscription::class);
