@@ -15,6 +15,6 @@ class MailboxSeeder extends Seeder
      */
     public function run()
     {
-        Mailbox::factory()->count(10)->create();
+        // Mailbox::factory()->count(10)->create();
     }
 }

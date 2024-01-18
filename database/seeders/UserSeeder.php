@@ -16,8 +16,7 @@ class UserSeeder extends Seeder
      */
     public function run()
     {
-        User::factory()->count(3)->create();
-
+        // User::factory()->count(3)->create();
         // insert real information
         DB::table('users')
             ->insert([
