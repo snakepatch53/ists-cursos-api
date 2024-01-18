@@ -20,5 +20,10 @@ class CourseSeeder extends Seeder
             ->hasTeacher(2)
             ->hasResponsible(2)
             ->create();
+
+        Course::factory()
+            ->count(1)
+            ->hasInscriptions(50)
+            ->create();
     }
 }

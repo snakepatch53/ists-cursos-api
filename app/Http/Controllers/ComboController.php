@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\InscriptionCetecApprovedsExport;
+use App\Exports\InscriptionCetecRegisterExport;
 use App\Models\Course;
 use App\Models\Inscription;
 use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ComboController extends Controller
 {
@@ -220,5 +223,15 @@ class ComboController extends Controller
             "errors" => null,
             "data" => $inscription
         ]);
+    }
+
+    public function getInsciptionsCetecRegisterExcel(Request $request, $id)
+    {
+        return Excel::download(new InscriptionCetecRegisterExport($id), 'inscriptions.xlsx');
+    }
+
+    public function getInscriptionCetecApprovedsExport(Request $request, $id)
+    {
+        return Excel::download(new InscriptionCetecApprovedsExport($id), 'inscriptions.xlsx');
     }
 }
