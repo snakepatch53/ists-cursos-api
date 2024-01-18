@@ -15,10 +15,10 @@ class InscriptionSeeder extends Seeder
      */
     public function run()
     {
-        Inscription::factory()
-            ->count(50)
-            ->hasStudent(2)
-            ->hasCourse(2)
-            ->create();
+        // Inscription::factory()
+        //     ->count(50)
+        //     ->hasStudent(2)
+        //     ->hasCourse(2)
+        //     ->create();
     }
 }

@@ -63,6 +63,10 @@ class ComboController extends Controller
             "data" => null
         ]);
 
+        //capitalizamos los campos
+        $request->student->name = ucwords(strtolower($request->student->name));
+        $request->student->lastname = ucwords(strtolower($request->student->lastname));
+
         // validamos si el estudiante existe
         $student = Student::where("dni", $request->student["dni"])->first();
         if (!$student) $student = Student::create($request->student);

@@ -15,15 +15,15 @@ class CourseSeeder extends Seeder
      */
     public function run()
     {
-        Course::factory()
-            ->count(2)
-            ->hasTeacher(2)
-            ->hasResponsible(2)
-            ->create();
+        // Course::factory()
+        //     ->count(2)
+        //     ->hasTeacher(2)
+        //     ->hasResponsible(2)
+        //     ->create();
 
-        Course::factory()
-            ->count(1)
-            ->hasInscriptions(50)
-            ->create();
+        // Course::factory()
+        //     ->count(1)
+        //     ->hasInscriptions(50)
+        //     ->create();
     }
 }
