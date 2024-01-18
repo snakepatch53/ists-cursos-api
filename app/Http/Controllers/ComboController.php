@@ -244,8 +244,6 @@ class ComboController extends Controller
         if (!$course) abort(404);
         $inscriptions = Inscription::where('course_id', $course_id)->where('state', 'Inscrito')->get(); // load if state is inscrito
         $inscriptions->load('student');
-        // Datos que deseas incluir en el CSV
-        // Crear un objeto Writer
         $csvWriter = Writer::createFromFileObject(new \SplTempFileObject());
         $csvWriter->insertOne(['username', 'password', 'firstname', 'lastname', 'email', 'course1', 'type1']);
         foreach ($inscriptions as $inscription) {
@@ -261,13 +259,5 @@ class ComboController extends Controller
         }
 
         $csvWriter->output('inscriptions_for_moodle.csv');
-        // Crear la respuesta con el contenido del archivo CSV y los encabezados
-        // return Response::make($csvWriter->output(), 200, [
-        //     'Content-Type' => 'text/csv',
-        //     'Content-Disposition' => 'attachment; filename="inscriptions_for_moodle.csv"',
-        //     'Pragma' => 'no-cache',
-        //     'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-        //     'Expires' => '0',
-        // ]);
     }
 }
