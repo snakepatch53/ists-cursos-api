@@ -228,12 +228,12 @@ class ComboController extends Controller
 
     public function getInsciptionsCetecRegisterExcel(Request $request, $id)
     {
-        return Excel::download(new InscriptionCetecRegisterExport($id), 'inscriptions.xlsx');
+        return Excel::download(new InscriptionCetecRegisterExport($id), 'inscriptions_for_register_cetec.xlsx');
     }
 
     public function getInscriptionCetecApprovedsExport(Request $request, $id)
     {
-        return Excel::download(new InscriptionCetecApprovedsExport($id), 'inscriptions.xlsx');
+        return Excel::download(new InscriptionCetecApprovedsExport($id), 'inscriptions_for_codes_cetec.xlsx');
     }
 
     public function getInscriptionMoodleCsvExport(Request $request, $course_id)
@@ -263,13 +263,25 @@ class ComboController extends Controller
             'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
         ];
         // Utiliza la función fputcsv para crear el contenido CSV directamente
-        $handle = fopen('php://output', 'w');
         foreach ($datos as $fila) {
-            fputcsv($handle, array_map('utf8_encode', $fila));
+            // Convierte la fila en una cadena, separada por comas
+            $csvLines[] = implode(",", $fila);
         }
-        fclose($handle);
+
+        // Unifica todas las líneas en un solo contenido
+        $csvContent = implode("\n", $csvLines);
 
         // Devuelve una respuesta con los encabezados y el contenido CSV
-        return Response::make('', 200, $headers);
+        return Response::make($csvContent, 200, $headers);
+
+
+        // $handle = fopen('php://output', 'w');
+        // foreach ($datos as $fila) {
+        //     fputcsv($handle, array_map('utf8_encode', $fila));
+        // }
+        // fclose($handle);
+
+        // // Devuelve una respuesta con los encabezados y el contenido CSV
+        // return Response::make('', 200, $headers);
     }
 }
