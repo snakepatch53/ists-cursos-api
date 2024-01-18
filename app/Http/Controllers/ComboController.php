@@ -265,7 +265,8 @@ class ComboController extends Controller
         // Utiliza la función fputcsv para crear el contenido CSV directamente
         foreach ($datos as $fila) {
             // Convierte la fila en una cadena, separada por comas
-            $csvLines[] = implode(",", $fila);
+            $filaUtf8 = array_map('utf8_encode', $fila);
+            $csvLines[] = implode(",", $filaUtf8);
         }
 
         // Unifica todas las líneas en un solo contenido
