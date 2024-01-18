@@ -54,6 +54,7 @@ class InscriptionController extends Controller
         $code = str_replace("{{logo2}}", url("public/img/logo2.png"), $code);
         $code = str_replace("{{logo3}}", url("public/img/logo3.png"), $code);
         $code = str_replace("{{logo4}}", url("public/img/logo4.png"), $code);
+        $code = str_replace("{{fondo_certificado1}}", url("public/img/fondo_certificado1.png"), $code);
         $data = [
             'inscription' => $inscription,
             'code' => $code
