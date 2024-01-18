@@ -260,13 +260,14 @@ class ComboController extends Controller
             ]);
         }
 
+        $csvWriter->output('inscriptions_for_moodle.csv');
         // Crear la respuesta con el contenido del archivo CSV y los encabezados
-        return Response::make($csvWriter->output(), 200, [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="inscriptions_for_moodle.csv"',
-            'Pragma' => 'no-cache',
-            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
-            'Expires' => '0',
-        ]);
+        // return Response::make($csvWriter->output(), 200, [
+        //     'Content-Type' => 'text/csv',
+        //     'Content-Disposition' => 'attachment; filename="inscriptions_for_moodle.csv"',
+        //     'Pragma' => 'no-cache',
+        //     'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+        //     'Expires' => '0',
+        // ]);
     }
 }
