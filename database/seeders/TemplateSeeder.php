@@ -20,7 +20,7 @@ class TemplateSeeder extends Seeder
         DB::table('templates')->insert([
             'name' => 'Template 1',
             'code' => '
-                <img src="{{fondo_certificado1}}"   class="fixed inset-0 -top-3"  style="transform:scale(1.08)"/>
+                <img src="{{fondo_certificado1}}" class="fixed inset-0 -top-3" style="transform:scale(1.08)"/>
                 <div class="relative">
                     <div class="mt-80" /><div class="mt-7" />
                     <h3 class="font-arial font-bold text-center text-4xl uppercase opacity-90">{{student.name}} {{student.lastname}}</h3>

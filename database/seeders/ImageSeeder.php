@@ -15,6 +15,6 @@ class ImageSeeder extends Seeder
      */
     public function run()
     {
-        Image::factory()->count(5)->create();
+        Image::factory()->count(4)->create();
     }
 }
