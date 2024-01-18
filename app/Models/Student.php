@@ -39,6 +39,21 @@ class Student extends Model
         $this->attributes['lastname'] = ucwords(strtolower($value));
     }
 
+    public function setAdressAttribute($value)
+    {
+        $this->attributes['address'] = ucwords(strtolower($value));
+    }
+
+    public function setEntityNameAttribute($value)
+    {
+        $this->attributes['entity_name'] = ucwords(strtolower($value));
+    }
+
+    public function setEntityPostAttribute($value)
+    {
+        $this->attributes['entity_post'] = ucwords(strtolower($value));
+    }
+
     public function inscriptions()
     {
         return $this->hasMany(Inscription::class);
