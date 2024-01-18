@@ -8,6 +8,7 @@ use App\Models\Course;
 use App\Models\Inscription;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -233,5 +234,42 @@ class ComboController extends Controller
     public function getInscriptionCetecApprovedsExport(Request $request, $id)
     {
         return Excel::download(new InscriptionCetecApprovedsExport($id), 'inscriptions.xlsx');
+    }
+
+    public function getInscriptionMoodleCsvExport(Request $request, $course_id)
+    {
+        $course = Course::find($course_id);
+        if (!$course) abort(404);
+        $inscriptions = Inscription::where('course_id', $course_id)->where('state', 'Inscrito')->get(); // load if state is inscrito
+        $inscriptions->load('student');
+        // Datos que deseas incluir en el CSV
+        $datos = [['username', 'password', 'firstname', 'lastname', 'email', 'course1', 'type1']];
+        foreach ($inscriptions as $inscription) {
+            $datos[] = [
+                $inscription->student->dni,
+                "Ists-" . date('Y'),
+                $inscription->student->name,
+                $inscription->student->lastname,
+                $inscription->student->email,
+                str_replace(' ', '_', $course->name),
+                1
+            ];
+        }
+        // Nombre del archivo CSV
+        $fileName = 'inscriptions_for_moodle.csv';
+        // Configura los encabezados de la respuesta
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
+        ];
+        // Utiliza la función fputcsv para crear el contenido CSV directamente
+        $handle = fopen('php://output', 'w');
+        foreach ($datos as $fila) {
+            fputcsv($handle, array_map('utf8_encode', $fila));
+        }
+        fclose($handle);
+
+        // Devuelve una respuesta con los encabezados y el contenido CSV
+        return Response::make('', 200, $headers);
     }
 }
