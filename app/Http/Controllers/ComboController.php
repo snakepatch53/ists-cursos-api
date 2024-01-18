@@ -259,15 +259,14 @@ class ComboController extends Controller
                 1
             ]);
         }
-        // Configurar la respuesta HTTP
-        $headers = array(
-            'Content-Type' => 'text/csv; charset=UTF-8',
-            'Content-Disposition' => 'attachment; filename="inscriptions_for_moodle.csv"',
-        );
 
         // Crear la respuesta con el contenido del archivo CSV y los encabezados
-        $response = Response::make($csvWriter->output(), 200, $headers);
-
-        return $response;
+        return Response::make($csvWriter->output(), 200, [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="inscriptions_for_moodle.csv"',
+            'Pragma' => 'no-cache',
+            'Cache-Control' => 'must-revalidate, post-check=0, pre-check=0',
+            'Expires' => '0',
+        ]);
     }
 }
