@@ -10,6 +10,8 @@ use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Validator;
+use League\Csv\Reader;
+use League\Csv\Writer;
 use Maatwebsite\Excel\Facades\Excel;
 
 class ComboController extends Controller
@@ -243,9 +245,11 @@ class ComboController extends Controller
         $inscriptions = Inscription::where('course_id', $course_id)->where('state', 'Inscrito')->get(); // load if state is inscrito
         $inscriptions->load('student');
         // Datos que deseas incluir en el CSV
-        $datos = [['username', 'password', 'firstname', 'lastname', 'email', 'course1', 'type1']];
+        // Crear un objeto Writer
+        $csvWriter = Writer::createFromFileObject(new \SplTempFileObject());
+        $csvWriter->insertOne(['username', 'password', 'firstname', 'lastname', 'email', 'course1', 'type1']);
         foreach ($inscriptions as $inscription) {
-            $datos[] = [
+            $csvWriter->insertOne([
                 $inscription->student->dni,
                 "Ists-" . date('Y'),
                 $inscription->student->name,
@@ -253,36 +257,26 @@ class ComboController extends Controller
                 $inscription->student->email,
                 str_replace(' ', '_', $course->name),
                 1
-            ];
+            ]);
         }
-        // Nombre del archivo CSV
-        $fileName = 'inscriptions_for_moodle.csv';
-        // Configura los encabezados de la respuesta
-        $headers = [
+
+
+        // use League\Csv\Writer;
+        // use Illuminate\Support\Facades\Response;
+
+
+
+        // Agregar datos al archivo CSV
+
+        // Configurar la respuesta HTTP
+        $headers = array(
             'Content-Type' => 'text/csv',
-            'Content-Disposition' => 'attachment; filename="' . $fileName . '"',
-        ];
-        // Utiliza la función fputcsv para crear el contenido CSV directamente
-        foreach ($datos as $fila) {
-            // Convierte la fila en una cadena, separada por comas
-            $filaUtf8 = array_map('utf8_encode', $fila);
-            $csvLines[] = implode(",", $filaUtf8);
-        }
+            'Content-Disposition' => 'attachment; filename="inscriptions_for_moodle.csv"',
+        );
 
-        // Unifica todas las líneas en un solo contenido
-        $csvContent = implode("\n", $csvLines);
+        // Crear la respuesta con el contenido del archivo CSV y los encabezados
+        $response = Response::make($csvWriter->output(null, "\n", ''), 200, $headers);
 
-        // Devuelve una respuesta con los encabezados y el contenido CSV
-        return Response::make($csvContent, 200, $headers);
-
-
-        // $handle = fopen('php://output', 'w');
-        // foreach ($datos as $fila) {
-        //     fputcsv($handle, array_map('utf8_encode', $fila));
-        // }
-        // fclose($handle);
-
-        // // Devuelve una respuesta con los encabezados y el contenido CSV
-        // return Response::make('', 200, $headers);
+        return $response;
     }
 }
